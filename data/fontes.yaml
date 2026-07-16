@@ -1,0 +1,155 @@
+# Fontes de pesquisa e palavras-chave do pipeline Semeio.
+# Editável manualmente via PR. Cada fonte precisa ter uma página de listagem
+# (url_base) com links para artigos individuais.
+
+fontes:
+  # Desativada: a listagem de /conteudos é renderizada via JS (SPA) e não expõe links de
+  # notícias/artigos estaticamente — a varredura só encontra páginas institucionais fixas do
+  # menu (seminários, colégios, conselhos). Reavaliar com RSS/API antes de ativar.
+  - nome: "Portal IPB - Artigos"
+    url_base: "https://www.ipb.org.br/conteudos?conteudo=artigo"
+    ativo: false
+
+  - nome: "Tesouraria IPB - Notícias e Documentos"
+    url_base: "http://www.tesourariaipb.org.br/"
+    ativo: true
+
+  - nome: "Blog Glória Finance - Rotina da Tesouraria"
+    url_base: "https://blog.gloriafinance.com.br/blog/"
+    ativo: true
+
+  - nome: "ICTUS Contabilidade - Blog"
+    url_base: "https://ictuscontabilidade.com.br/"
+    ativo: true
+
+  - nome: "M&M Contabilidade de Igrejas - Matérias"
+    url_base: "https://mmcontabilidade.com.br/igrejas/"
+    ativo: true
+
+  - nome: "Canella & Santos - Blog Contabilidade"
+    url_base: "https://canellaesantos.com/blog/"
+    ativo: true
+
+  - nome: "Alves Contabilidade - Centros Religiosos"
+    url_base: "https://alvescontabilidade.com.br/ctg/contabilidade-para-centros-religiosos/"
+    ativo: true
+
+  # Desativada: certificado TLS do servidor está incompleto (falta enviar o intermediário da
+  # cadeia GlobalSign — confirmado via openssl s_client, "unable to verify the first
+  # certificate"). Não é um problema do nosso ambiente; qualquer cliente com verificação de
+  # certificado estrita (httpx, curl) falha a conexão. Reativar se o site corrigir a cadeia.
+  - nome: "Nova Cont - Blog Contabilidade"
+    url_base: "https://novacont.com.br/blog/"
+    ativo: false
+
+  # url_base corrigida: "/artigos/" (pedido original) devolve 404 e "/articles/" é uma listagem
+  # carregada via JS sem resultados estáticos. "/sections/vida-crista/" é uma seção real do
+  # site com links estáticos para artigos individuais (/article/titulo/).
+  - nome: "Coalizão pelo Evangelho (TGC Brasil) - Artigos"
+    url_base: "https://coalizaopeloevangelho.org/sections/vida-crista/"
+    ativo: true
+
+  - nome: "Voltemos ao Evangelho - Vida Cristã e Mordomia"
+    url_base: "https://voltemosaoevangelho.com/blog/"
+    ativo: true
+
+  - nome: "Ministério Fiel - Liderança e Gestão Bíblica"
+    url_base: "https://ministeriofiel.com.br/artigos/"
+    ativo: true
+
+  - nome: "Editora Cultura Cristã - Blog Institucional IPB"
+    url_base: "https://blog.editoraculturacrista.com.br/"
+    ativo: true
+
+  - nome: "Ministério Ligonier (Português) - Ética e Teologia"
+    url_base: "https://pt.ligonier.org/artigos/"
+    ativo: true
+
+  - nome: "Instituto Reformado - Blog"
+    url_base: "https://institutoreformado.com.br/blog/"
+    ativo: true
+
+  # Desativada: "/artigos-e-ensaios/" (pedido original) devolve 404. O conteúdo real do CPAJ é
+  # a revista Fides Reformata, organizada por edição em PDF (não por artigo HTML individual) —
+  # incompatível com o extrator atual, que usa trafilatura sobre HTML. Reavaliar se for viável
+  # parsing de PDF no futuro.
+  - nome: "Mackenzie - Artigos CPAJ (Centro de Pós-Graduação Andrew Jumper)"
+    url_base: "https://cpaj.mackenzie.br/artigos-e-ensaios/"
+    ativo: false
+
+palavras_chave:
+  # --- NÚCLEO: GESTÃO E FINANÇAS (Alta Relevância) ---
+  - termo: "tesouraria"
+    peso: 3
+  - termo: "gestão financeira de igreja"
+    peso: 3
+  - termo: "prestação de contas"
+    peso: 3
+  - termo: "contabilidade para igrejas"
+    peso: 3
+  - termo: "imunidade tributária"
+    peso: 3
+  - termo: "obrigações fiscais"
+    peso: 2
+  - termo: "terceiro setor"
+    peso: 2
+  - termo: "livro caixa"
+    peso: 2
+  - termo: "EFD-Reinf igrejas"
+    peso: 2
+  - termo: "e-Social igrejas"
+    peso: 2
+  - termo: "côngrua pastoral"
+    peso: 3
+  - termo: "isenção tributária"
+    peso: 2
+  - termo: "estatuto da igreja"
+    peso: 2
+  - termo: "relatório R1"
+    peso: 3 # Muito específico da IPB
+
+  # --- NÚCLEO: GOVERNO PRESBITERIANO E IPB ---
+  - termo: "conselho da igreja"
+    peso: 2
+  - termo: "presbiteriano"
+    peso: 2
+  - termo: "presbitério"
+    peso: 2
+  - termo: "supremo concílio"
+    peso: 1
+  - termo: "sínodo"
+    peso: 1
+  - termo: "oficiais da igreja"
+    peso: 2
+  - termo: "presbítero"
+    peso: 2
+  - termo: "diácono"
+    peso: 1
+  - termo: "junta diaconal"
+    peso: 1
+  - termo: "ordem e decência"
+    peso: 2 # Baseado em 1 Coríntios 14:40, forte apelo no Semeio
+
+  # --- NÚCLEO: TEOLOGIA E MORDOMIA (Conexão Doutrinária) ---
+  - termo: "mordomia cristã"
+    peso: 3 # Termo teológico mais importante para finanças
+  - termo: "dízimo"
+    peso: 2
+  - termo: "ofertas"
+    peso: 2
+  - termo: "teologia reformada"
+    peso: 2
+  - termo: "calvinismo"
+    peso: 2
+  - termo: "confissão de fé de westminster"
+    peso: 2
+  - termo: "graça soberana"
+    peso: 1
+  - termo: "soberania de Deus"
+    peso: 1
+  - termo: "ética de trabalho"
+    peso: 1
+  - termo: "vocação"
+    peso: 1
+  - termo: "administração fiel"
+    peso: 2

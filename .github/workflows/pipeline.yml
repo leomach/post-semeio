@@ -1,0 +1,49 @@
+name: Pipeline Semeio Content
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'  # segunda-feira, 12h UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: pipeline-semeio
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Módulo 1 - Scraping
+        run: python -m src.scraper.main
+
+      - name: Módulo 2+3 - Geração de artigo e carrossel
+        run: python -m src.generator.main
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+
+      - name: Módulo 4 - Notificação Telegram
+        run: python -m src.notifier.main
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+      - name: Commit do estado atualizado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/estado.json
+          git diff --staged --quiet && echo "Nenhuma mudança" || git commit -m "chore: atualiza estado [skip ci]"
+          git push
