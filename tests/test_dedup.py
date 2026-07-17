@@ -63,3 +63,25 @@ def test_ja_processado_detecta_link_registrado():
 
     assert dedup.ja_processado("https://exemplo.com/artigo", estado) is True
     assert dedup.ja_processado("https://exemplo.com/artigo/", estado) is True
+
+
+def test_registrar_post_publicado_anexa_ao_historico():
+    estado = {}
+    dedup.registrar_post_publicado(estado, "rotina-financeira", "conciliação bancária", "Título")
+
+    assert len(estado["historico_posts"]) == 1
+    entrada = estado["historico_posts"][0]
+    assert entrada["eixo"] == "rotina-financeira"
+    assert entrada["palavra_chave"] == "conciliação bancária"
+    assert entrada["titulo"] == "Título"
+    assert "publicado_em" in entrada
+
+
+def test_eixos_recentes_retorna_ultimos_n_em_ordem_cronologica():
+    estado = {}
+    for eixo in ("a", "b", "c", "d"):
+        dedup.registrar_post_publicado(estado, eixo, "pc", "t")
+
+    assert dedup.eixos_recentes(estado, 3) == ["b", "c", "d"]
+    assert dedup.eixos_recentes(estado, 0) == []
+    assert dedup.eixos_recentes({}, 3) == []

@@ -60,3 +60,22 @@ def registrar_processado(url: str, fonte: str, titulo: str, estado: dict) -> str
         "processado_em": datetime.now(timezone.utc).isoformat(),
     }
     return hash_url
+
+
+def eixos_recentes(estado: dict, n: int) -> list[str]:
+    """Eixos temáticos dos últimos `n` posts publicados (mais antigo primeiro), usados como
+    janela de cooldown pelo gerador. Ignora entradas sem eixo."""
+    if n <= 0:
+        return []
+    historico = estado.get("historico_posts", [])
+    return [p["eixo"] for p in historico[-n:] if p.get("eixo")]
+
+
+def registrar_post_publicado(estado: dict, eixo: str, palavra_chave: str, titulo: str) -> None:
+    """Anexa ao histórico o post recém-publicado, para alimentar o cooldown de eixos."""
+    estado.setdefault("historico_posts", []).append({
+        "eixo": eixo,
+        "palavra_chave": palavra_chave,
+        "titulo": titulo,
+        "publicado_em": datetime.now(timezone.utc).isoformat(),
+    })

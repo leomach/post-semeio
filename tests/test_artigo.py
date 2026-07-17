@@ -91,13 +91,3 @@ def test_validar_post_rejeita_resumo_longo_demais():
     post["resumo"] = "x" * 281
     with pytest.raises(ValueError, match="[Rr]esumo"):
         artigo._validar_post(post)
-
-
-def test_artigos_do_tema_mais_relevante_filtra_por_maior_peso():
-    artigos = [
-        {"peso": 3, "titulo": "a"},
-        {"peso": 1, "titulo": "b"},
-        {"peso": 3, "titulo": "c"},
-    ]
-    rel = artigo._artigos_do_tema_mais_relevante(artigos)
-    assert {a["titulo"] for a in rel} == {"a", "c"}

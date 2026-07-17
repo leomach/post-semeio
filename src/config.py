@@ -50,6 +50,13 @@ BLOG_SLUG_MAX = 60
 # Semeio usar outras rotas.
 BLOG_LINKS_INTERNOS = ("/funcionalidades", "/precos")
 
+# Diversidade de pauta: quantidade de posts recentes cujos eixos temáticos ficam em "cooldown".
+# Um eixo que aparece entre os últimos N posts publicados (registrados em data/estado.json) não é
+# escolhido como base de um novo post, evitando repetir o mesmo assunto em posts seguidos. Se
+# todos os eixos disponíveis no ciclo estiverem em cooldown, o gerador escolhe o menos recente
+# (nunca trava o pipeline) e emite um aviso.
+TEMA_COOLDOWN_POSTS = int(os.environ.get("TEMA_COOLDOWN_POSTS") or "3")
+
 # Carrossel
 CARROSSEL_MIN_SLIDES = 4
 CARROSSEL_MAX_SLIDES = 7

@@ -21,14 +21,10 @@ from src.generator.json_util import limpar_json
 from src.generator.llm_client import gerar
 from src.generator.prompts.artigo import montar_prompt_artigo
 from src.generator.prompts.sumarizacao import montar_prompt_sumarizacao
+from src.generator.selecao import selecionar_pauta
+from src.scraper.fontes import PalavraChave
 
 logger = logging.getLogger(__name__)
-
-
-def _artigos_do_tema_mais_relevante(artigos_extraidos: list[dict]) -> list[dict]:
-    """RF05: agrupa apenas o conteúdo relacionado ao tema de maior peso do ciclo atual."""
-    maior_peso = max(artigo["peso"] for artigo in artigos_extraidos)
-    return [artigo for artigo in artigos_extraidos if artigo["peso"] == maior_peso]
 
 
 def slugify(texto: str, max_chars: int = BLOG_SLUG_MAX) -> str:
@@ -140,8 +136,17 @@ def _montar_post(dados: dict) -> dict:
     }
 
 
-def gerar_post_blog(artigos_extraidos: list[dict]) -> dict:
-    artigos_relevantes = _artigos_do_tema_mais_relevante(artigos_extraidos)
+def gerar_post_blog(
+    artigos_extraidos: list[dict],
+    palavras_chave: list[PalavraChave],
+    estado: dict,
+    cooldown_posts: int,
+) -> tuple[dict, str]:
+    """Gera o post de blog a partir do eixo temático escolhido (respeitando o cooldown) e
+    devolve ``(post, eixo)``. O ``eixo`` deve ser registrado no estado pelo chamador."""
+    eixo, artigos_relevantes = selecionar_pauta(
+        artigos_extraidos, palavras_chave, estado, cooldown_posts
+    )
     prompt_sumarizacao = montar_prompt_sumarizacao(artigos_relevantes)
     contexto_unificado = gerar(prompt_sumarizacao)
 
@@ -165,7 +170,7 @@ def gerar_post_blog(artigos_extraidos: list[dict]) -> dict:
     with open(ARTIGO_PATH, "w", encoding="utf-8") as f:
         f.write(f"# {post['titulo']}\n\n{post['conteudo']}\n")
 
-    return post
+    return post, eixo
 
 
 def markdown_do_post(post: dict) -> str:

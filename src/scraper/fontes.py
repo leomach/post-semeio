@@ -17,6 +17,7 @@ class Fonte:
 class PalavraChave:
     termo: str
     peso: int
+    eixo: str = "geral"
 
 
 @dataclass(frozen=True)
@@ -34,7 +35,11 @@ def carregar_fontes() -> ConfigFontes:
         for item in bruto.get("fontes", [])
     ]
     palavras_chave = [
-        PalavraChave(termo=item["termo"], peso=int(item.get("peso", 1)))
+        PalavraChave(
+            termo=item["termo"],
+            peso=int(item.get("peso", 1)),
+            eixo=str(item.get("eixo", "geral")),
+        )
         for item in bruto.get("palavras_chave", [])
     ]
 

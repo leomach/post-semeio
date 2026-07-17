@@ -10,7 +10,11 @@ A cada execução (agendada semanalmente ou disparada manualmente), o pipeline:
 2. **Gera** um post de blog original e otimizado para SEO via Gemini (`src/generator/`), salvo
    em `output/post_blog.json` (título, slug, resumo/meta description, conteúdo em Markdown,
    `capa_alt`, `seo_titulo`, `seo_descricao`, tags e `status`). Uma versão legível também é
-   escrita em `output/artigo.md`.
+   escrita em `output/artigo.md`. A pauta-base é escolhida com **diversidade temática**: cada
+   palavra-chave em `data/fontes.yaml` pertence a um `eixo`, e um eixo publicado nos últimos
+   `TEMA_COOLDOWN_POSTS` posts (default 3, ver `src/config.py`) entra em *cooldown* e não é
+   reaproveitado — evitando repetir o mesmo assunto em posts seguidos. O eixo de cada post
+   publicado fica registrado em `data/estado.json` (`historico_posts`).
 3. **Deriva** um roteiro de carrossel + legenda para Instagram a partir do artigo, salvo em
    `output/carrossel.json`.
 4. **Envia** o post (campos prontos para publicar) e o carrossel formatados para um chat do
@@ -70,9 +74,15 @@ Variável opcional (**Settings → Secrets and variables → Actions → Variabl
 
 - `GEMINI_MODEL` (default: `gemini-2.5-pro`, definido em `src/config.py`)
 
+Variável opcional adicional:
+
+- `TEMA_COOLDOWN_POSTS` (default: `3`) — quantos posts recentes mantêm seus eixos temáticos em
+  cooldown antes de o assunto poder se repetir.
+
 Ao final de cada execução, o próprio workflow commita e faz push de `data/estado.json`
-atualizado (histórico de links já processados) — por isso o job precisa de permissão de escrita
-em conteúdo (`permissions: contents: write`, já configurado no workflow).
+atualizado (histórico de links já processados **e** dos eixos temáticos já publicados) — por
+isso o job precisa de permissão de escrita em conteúdo (`permissions: contents: write`, já
+configurado no workflow).
 
 ## Editando fontes e palavras-chave
 

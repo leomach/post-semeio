@@ -77,79 +77,121 @@ fontes:
     url_base: "https://cpaj.mackenzie.br/artigos-e-ensaios/"
     ativo: false
 
+# O campo `eixo` agrupa palavras-chave por assunto. O gerador usa o eixo para diversificar as
+# pautas: um eixo publicado recentemente entra em "cooldown" (ver TEMA_COOLDOWN_POSTS em
+# src/config.py) e não é escolhido como base de um novo post, evitando repetir o mesmo assunto
+# em posts seguidos. Eixos atuais: rotina-financeira, fiscal-tributario, governo-presbiteriano,
+# teologia-mordomia.
 palavras_chave:
-  # --- NÚCLEO: GESTÃO E FINANÇAS (Alta Relevância) ---
+  # --- EIXO: ROTINA FINANCEIRA E CONTÁBIL (dia a dia da tesouraria) ---
   - termo: "tesouraria"
     peso: 3
+    eixo: rotina-financeira
   - termo: "gestão financeira de igreja"
     peso: 3
+    eixo: rotina-financeira
   - termo: "prestação de contas"
     peso: 3
+    eixo: rotina-financeira
   - termo: "contabilidade para igrejas"
     peso: 3
-  - termo: "imunidade tributária"
-    peso: 3
-  - termo: "obrigações fiscais"
-    peso: 2
-  - termo: "terceiro setor"
-    peso: 2
+    eixo: rotina-financeira
   - termo: "livro caixa"
     peso: 2
-  - termo: "EFD-Reinf igrejas"
-    peso: 2
-  - termo: "e-Social igrejas"
-    peso: 2
-  - termo: "côngrua pastoral"
-    peso: 3
-  - termo: "isenção tributária"
-    peso: 2
-  - termo: "estatuto da igreja"
-    peso: 2
+    eixo: rotina-financeira
   - termo: "relatório R1"
     peso: 3 # Muito específico da IPB
-
-  # --- NÚCLEO: GOVERNO PRESBITERIANO E IPB ---
-  - termo: "conselho da igreja"
-    peso: 2
-  - termo: "presbiteriano"
-    peso: 2
-  - termo: "presbitério"
-    peso: 2
-  - termo: "supremo concílio"
-    peso: 1
-  - termo: "sínodo"
-    peso: 1
-  - termo: "oficiais da igreja"
-    peso: 2
-  - termo: "presbítero"
-    peso: 2
-  - termo: "diácono"
-    peso: 1
-  - termo: "junta diaconal"
-    peso: 1
-  - termo: "ordem e decência"
-    peso: 2 # Baseado em 1 Coríntios 14:40, forte apelo no Semeio
-
-  # --- NÚCLEO: TEOLOGIA E MORDOMIA (Conexão Doutrinária) ---
-  - termo: "mordomia cristã"
-    peso: 3 # Termo teológico mais importante para finanças
-  - termo: "dízimo"
-    peso: 2
-  - termo: "ofertas"
-    peso: 2
-  - termo: "teologia reformada"
-    peso: 2
-  - termo: "calvinismo"
-    peso: 2
-  - termo: "confissão de fé de westminster"
-    peso: 2
-  - termo: "graça soberana"
-    peso: 1
-  - termo: "soberania de Deus"
-    peso: 1
-  - termo: "ética de trabalho"
-    peso: 1
-  - termo: "vocação"
-    peso: 1
+    eixo: rotina-financeira
   - termo: "administração fiel"
     peso: 2
+    eixo: rotina-financeira
+
+  # --- EIXO: FISCAL E TRIBUTÁRIO (obrigações, imunidade, folha pastoral) ---
+  - termo: "imunidade tributária"
+    peso: 3
+    eixo: fiscal-tributario
+  - termo: "obrigações fiscais"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "terceiro setor"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "EFD-Reinf igrejas"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "e-Social igrejas"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "côngrua pastoral"
+    peso: 3
+    eixo: fiscal-tributario
+  - termo: "isenção tributária"
+    peso: 2
+    eixo: fiscal-tributario
+
+  # --- EIXO: GOVERNO PRESBITERIANO E IPB (estrutura, ofícios, ordem) ---
+  - termo: "estatuto da igreja"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "conselho da igreja"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "presbiteriano"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "presbitério"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "supremo concílio"
+    peso: 1
+    eixo: governo-presbiteriano
+  - termo: "sínodo"
+    peso: 1
+    eixo: governo-presbiteriano
+  - termo: "oficiais da igreja"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "presbítero"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "diácono"
+    peso: 1
+    eixo: governo-presbiteriano
+  - termo: "junta diaconal"
+    peso: 1
+    eixo: governo-presbiteriano
+  - termo: "ordem e decência"
+    peso: 2 # Baseado em 1 Coríntios 14:40, forte apelo no Semeio
+    eixo: governo-presbiteriano
+
+  # --- EIXO: TEOLOGIA E MORDOMIA (conexão doutrinária) ---
+  - termo: "mordomia cristã"
+    peso: 3 # Termo teológico mais importante para finanças
+    eixo: teologia-mordomia
+  - termo: "dízimo"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "ofertas"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "teologia reformada"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "calvinismo"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "confissão de fé de westminster"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "graça soberana"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "soberania de Deus"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "ética de trabalho"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "vocação"
+    peso: 1
+    eixo: teologia-mordomia
