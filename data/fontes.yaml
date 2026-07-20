@@ -75,6 +75,26 @@ fontes:
     url_base: "https://institutoreformado.com.br/blog/"
     ativo: true
 
+  # ---------------------------------------------------------------------------------
+  # Fontes adicionadas em jul/2026 para ampliar cobertura. Todas verificadas: retornam
+  # 200 + HTML e links de artigos reais que casam as palavras-chave (UA de bot padrão).
+  # ---------------------------------------------------------------------------------
+  - nome: "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)"
+    url_base: "https://oikonomiacontabilidade.com/blog"
+    ativo: true
+
+  - nome: "inChurch - Blog (Gestão de Igrejas)"
+    url_base: "https://inchurch.com.br/blog/"
+    ativo: true
+
+  - nome: "Grupo Nova Cont - Blog (Terceiro Setor e Contabilidade)"
+    url_base: "https://gruponovacont.com.br/"
+    ativo: true
+
+  - nome: "Igreja Reformada - Artigos (Teologia Reformada e Vida Cristã)"
+    url_base: "https://igrejareformada.com.br/"
+    ativo: true
+
   # Desativada: "/artigos-e-ensaios/" (pedido original) devolve 404. O conteúdo real do CPAJ é
   # a revista Fides Reformata, organizada por edição em PDF (não por artigo HTML individual) —
   # incompatível com o extrator atual, que usa trafilatura sobre HTML. Reavaliar se for viável
@@ -199,5 +219,149 @@ palavras_chave:
     peso: 1
     eixo: teologia-mordomia
   - termo: "vocação"
+    peso: 1
+    eixo: teologia-mordomia
+
+  # ===================================================================================
+  # EXPANSÃO DE VOCABULÁRIO (jul/2026): termos escolhidos a partir dos títulos reais que
+  # as fontes ativas publicam (ex.: M&M, ICTUS) e do vocabulário fiscal/contábil comum ao
+  # nicho. Atenção: o matcher usa substring (`termo in texto_do_link`), então termos curtos
+  # e genéricos foram evitados (ex.: "MEI" casaria dentro de "primeiro"). Pesos moderados.
+  # ===================================================================================
+
+  # --- ROTINA FINANCEIRA E CONTÁBIL (ampliação) ---
+  - termo: "gestão financeira"
+    peso: 3
+    eixo: rotina-financeira
+  - termo: "gestão eclesiástica"
+    peso: 3
+    eixo: rotina-financeira
+  - termo: "administração financeira"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "tesoureiro"
+    peso: 3
+    eixo: rotina-financeira
+  - termo: "balancete"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "fluxo de caixa"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "orçamento"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "planejamento financeiro"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "escrituração"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "folha de pagamento"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "captação de recursos"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "transparência"
+    peso: 2
+    eixo: rotina-financeira
+  - termo: "doações"
+    peso: 2
+    eixo: rotina-financeira
+
+  # --- FISCAL E TRIBUTÁRIO (ampliação) ---
+  - termo: "obrigações legais"
+    peso: 3
+    eixo: fiscal-tributario
+  - termo: "obrigações acessórias"
+    peso: 3
+    eixo: fiscal-tributario
+  - termo: "regularização"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "nota fiscal"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "trabalhista"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "LGPD"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "IPTU"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "salário"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "férias"
+    peso: 1
+    eixo: fiscal-tributario
+  - termo: "ministro religioso"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "ministro de confissão religiosa"
+    peso: 3 # Termo técnico específico usado nas fontes contábeis
+    eixo: fiscal-tributario
+  - termo: "CNPJ"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "imposto de renda"
+    peso: 2
+    eixo: fiscal-tributario
+  - termo: "declaração"
+    peso: 1
+    eixo: fiscal-tributario
+  - termo: "utilidade pública"
+    peso: 1
+    eixo: fiscal-tributario
+  - termo: "cartório"
+    peso: 1
+    eixo: fiscal-tributario
+
+  # --- GOVERNO PRESBITERIANO E IPB (ampliação) ---
+  - termo: "assembleia"
+    peso: 1
+    eixo: governo-presbiteriano
+  - termo: "governança eclesiástica"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "estatuto social"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "disciplina eclesiástica"
+    peso: 2
+    eixo: governo-presbiteriano
+  - termo: "membresia"
+    peso: 1
+    eixo: governo-presbiteriano
+
+  # --- TEOLOGIA E MORDOMIA (ampliação) ---
+  - termo: "generosidade"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "contentamento"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "dinheiro"
+    peso: 2
+    eixo: teologia-mordomia
+  - termo: "riquezas"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "prosperidade"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "discipulado"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "vida cristã"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "gratidão"
+    peso: 1
+    eixo: teologia-mordomia
+  - termo: "santidade"
     peso: 1
     eixo: teologia-mordomia
