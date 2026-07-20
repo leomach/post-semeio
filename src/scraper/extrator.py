@@ -7,7 +7,7 @@ from urllib.robotparser import RobotFileParser
 import httpx
 import trafilatura
 from bs4 import BeautifulSoup
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from src.config import HTTP_TIMEOUT_SECONDS, MAX_RETRIES, RATE_LIMIT_SECONDS, USER_AGENT
 from src.scraper.fontes import Fonte, PalavraChave
@@ -16,6 +16,34 @@ logger = logging.getLogger(__name__)
 
 _ultima_requisicao_por_dominio: dict[str, float] = {}
 _robots_cache: dict[str, RobotFileParser] = {}
+
+# Extensões que quase sempre indicam download binário (não-HTML). Links de listagem com esses
+# sufixos são descartados antes de tentar extrair conteúdo — evita passar PDF/planilha ao
+# trafilatura (que falha com "not valid HTML") e baixar arquivos pesados à toa.
+_EXTENSOES_NAO_HTML = (
+    ".pdf", ".xls", ".xlsx", ".doc", ".docx", ".ppt", ".pptx",
+    ".zip", ".rar", ".7z", ".gz", ".csv", ".rtf", ".odt", ".ods",
+    ".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico",
+    ".mp3", ".mp4", ".avi", ".mov", ".wmv",
+)
+_TIPOS_HTML = ("text/html", "application/xhtml")
+
+
+class ConteudoNaoHTML(Exception):
+    """Resposta HTTP bem-sucedida mas com Content-Type não-HTML (ex.: PDF, planilha)."""
+
+
+def _parece_download(url: str) -> bool:
+    return urlsplit(url).path.lower().endswith(_EXTENSOES_NAO_HTML)
+
+
+def _erro_recuperavel(exc: BaseException) -> bool:
+    """Só vale nova tentativa para erros transitórios: 5xx, 429 e falhas de rede/timeout.
+    Erros 4xx (403, 404, ...) e Content-Type não-HTML são permanentes — não adianta repetir."""
+    if isinstance(exc, httpx.HTTPStatusError):
+        codigo = exc.response.status_code
+        return codigo >= 500 or codigo == 429
+    return isinstance(exc, httpx.TransportError)
 
 
 def _dominio(url: str) -> str:
@@ -62,19 +90,24 @@ def pode_acessar(url: str) -> bool:
 @retry(
     stop=stop_after_attempt(MAX_RETRIES),
     wait=wait_exponential(multiplier=1, min=1, max=10),
+    retry=retry_if_exception(_erro_recuperavel),
     reraise=True,
 )
-def _buscar_html(url: str) -> str:
+def _buscar_html(url: str, user_agent: str | None = None) -> str:
     _respeitar_rate_limit(url)
-    with httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=HTTP_TIMEOUT_SECONDS, follow_redirects=True) as client:
+    headers = {"User-Agent": user_agent or USER_AGENT}
+    with httpx.Client(headers=headers, timeout=HTTP_TIMEOUT_SECONDS, follow_redirects=True) as client:
         resposta = client.get(url)
         resposta.raise_for_status()
+        tipo = resposta.headers.get("content-type", "").lower()
+        if tipo and not any(t in tipo for t in _TIPOS_HTML):
+            raise ConteudoNaoHTML(f"Content-Type não-HTML ({tipo}) em {url}")
         return resposta.text
 
 
 def extrair_links_candidatos(fonte: Fonte, palavras_chave: list[PalavraChave]) -> list[tuple[str, int]]:
     """Retorna (url, peso) para links da página de listagem cujo texto casa com alguma palavra-chave."""
-    html = _buscar_html(fonte.url_base)
+    html = _buscar_html(fonte.url_base, fonte.user_agent)
     soup = BeautifulSoup(html, "lxml")
     dominio_base = _dominio(fonte.url_base)
 
@@ -82,6 +115,9 @@ def extrair_links_candidatos(fonte: Fonte, palavras_chave: list[PalavraChave]) -
     for tag in soup.find_all("a", href=True):
         href = urljoin(fonte.url_base, tag["href"])
         if _dominio(href) != dominio_base:
+            continue
+
+        if _parece_download(href):
             continue
 
         texto = tag.get_text(" ", strip=True).lower()
@@ -95,8 +131,8 @@ def extrair_links_candidatos(fonte: Fonte, palavras_chave: list[PalavraChave]) -
     return sorted(candidatos.items(), key=lambda item: item[1], reverse=True)
 
 
-def extrair_conteudo(url: str) -> dict | None:
-    html = _buscar_html(url)
+def extrair_conteudo(url: str, user_agent: str | None = None) -> dict | None:
+    html = _buscar_html(url, user_agent)
     extraido = trafilatura.extract(
         html, url=url, output_format="json", with_metadata=True, favor_precision=True
     )
@@ -147,7 +183,7 @@ def processar_fonte(
             continue
 
         try:
-            conteudo = extrair_conteudo(url)
+            conteudo = extrair_conteudo(url, fonte.user_agent)
         except Exception:
             falhas_consecutivas += 1
             logger.warning("Falha ao extrair %s (falha %d/%d)", url, falhas_consecutivas, max_falhas_consecutivas, exc_info=True)

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import yaml
 
-from src.config import FONTES_PATH
+from src.config import FONTES_PATH, USER_AGENT_NAVEGADOR
 
 
 @dataclass(frozen=True)
@@ -11,6 +11,9 @@ class Fonte:
     nome: str
     url_base: str
     ativo: bool
+    # User-Agent a usar nesta fonte. None = UA padrão identificável; preenchido com o UA de
+    # navegador quando a fonte é marcada com `usar_navegador: true` (sites que dão 403 ao bot).
+    user_agent: str | None = None
 
 
 @dataclass(frozen=True)
@@ -31,7 +34,12 @@ def carregar_fontes() -> ConfigFontes:
         bruto = yaml.safe_load(f) or {}
 
     fontes = [
-        Fonte(nome=item["nome"], url_base=item["url_base"], ativo=bool(item.get("ativo", False)))
+        Fonte(
+            nome=item["nome"],
+            url_base=item["url_base"],
+            ativo=bool(item.get("ativo", False)),
+            user_agent=USER_AGENT_NAVEGADOR if item.get("usar_navegador") else None,
+        )
         for item in bruto.get("fontes", [])
     ]
     palavras_chave = [

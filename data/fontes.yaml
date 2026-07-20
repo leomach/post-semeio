@@ -49,9 +49,11 @@ fontes:
     url_base: "https://coalizaopeloevangelho.org/sections/vida-crista/"
     ativo: true
 
+  # usar_navegador: o site responde 403 ao User-Agent do bot (WAF). Usamos UA de navegador.
   - nome: "Voltemos ao Evangelho - Vida Cristã e Mordomia"
     url_base: "https://voltemosaoevangelho.com/blog/"
     ativo: true
+    usar_navegador: true
 
   - nome: "Ministério Fiel - Liderança e Gestão Bíblica"
     url_base: "https://ministeriofiel.com.br/artigos/"
@@ -61,9 +63,13 @@ fontes:
     url_base: "https://blog.editoraculturacrista.com.br/"
     ativo: true
 
+  # Desativada: protegida por Cloudflare com bot-management. Retorna 403 tanto ao UA do bot
+  # quanto a UA de navegador com cabeçalhos completos (Accept/Accept-Language) — confirmado
+  # local e no CI. Exigiria navegador headless / bypass de challenge JS, incompatível com o
+  # stack atual (httpx + trafilatura). Reativar só com outra estratégia (ex.: RSS, se houver).
   - nome: "Ministério Ligonier (Português) - Ética e Teologia"
     url_base: "https://pt.ligonier.org/artigos/"
-    ativo: true
+    ativo: false
 
   - nome: "Instituto Reformado - Blog"
     url_base: "https://institutoreformado.com.br/blog/"

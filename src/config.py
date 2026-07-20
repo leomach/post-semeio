@@ -21,6 +21,14 @@ CARROSSEL_PATH = OUTPUT_DIR / "carrossel.json"
 
 # Scraping
 USER_AGENT = "SemeioContentBot/1.0 (+contato: leandromachado@cogtime.com.br)"
+# Alguns sites (atrás de WAF/Cloudflare) respondem 403 a qualquer User-Agent que não seja de
+# navegador. Para essas fontes específicas — marcadas com `usar_navegador: true` em
+# data/fontes.yaml — usamos este UA. Mantemos o UA identificável como padrão (NFR 6.1) e só
+# recorremos ao de navegador onde comprovadamente necessário.
+USER_AGENT_NAVEGADOR = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
 RATE_LIMIT_SECONDS = float(os.environ.get("SCRAPER_RATE_LIMIT_SECONDS", "4"))
 HTTP_TIMEOUT_SECONDS = 20
 MAX_RETRIES = 3

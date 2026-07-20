@@ -21,7 +21,7 @@ PALAVRAS_CHAVE = [
 
 
 def test_extrair_links_candidatos_filtra_por_palavra_chave_e_dominio(monkeypatch):
-    monkeypatch.setattr(extrator, "_buscar_html", lambda url: HTML_LISTAGEM)
+    monkeypatch.setattr(extrator, "_buscar_html", lambda url, user_agent=None: HTML_LISTAGEM)
 
     candidatos = extrator.extrair_links_candidatos(FONTE, PALAVRAS_CHAVE)
     urls = [url for url, _ in candidatos]
@@ -33,7 +33,7 @@ def test_extrair_links_candidatos_filtra_por_palavra_chave_e_dominio(monkeypatch
 
 
 def test_extrair_links_candidatos_rankeia_por_peso(monkeypatch):
-    monkeypatch.setattr(extrator, "_buscar_html", lambda url: HTML_LISTAGEM)
+    monkeypatch.setattr(extrator, "_buscar_html", lambda url, user_agent=None: HTML_LISTAGEM)
 
     candidatos = extrator.extrair_links_candidatos(FONTE, PALAVRAS_CHAVE)
     pesos = dict(candidatos)
@@ -45,7 +45,7 @@ def test_extrair_links_candidatos_rankeia_por_peso(monkeypatch):
 def test_circuit_breaker_para_apos_falhas_consecutivas(monkeypatch):
     chamadas = []
 
-    def _extrair_com_falha(url):
+    def _extrair_com_falha(url, user_agent=None):
         chamadas.append(url)
         raise RuntimeError("falha simulada de rede")
 
@@ -120,6 +120,89 @@ def test_rate_limit_aguarda_intervalo_minimo_entre_requisicoes_ao_mesmo_dominio(
     extrator._respeitar_rate_limit("https://exemplo.com/pagina-2")
 
     assert esperas == [3.0]  # 4s de limite - 1s decorrido
+
+
+HTML_COM_DOWNLOADS = """
+<html><body>
+  <a href="/artigos/tesouraria-na-pratica">Tesouraria na prática</a>
+  <a href="/downloads/modelo_pc.xls">Planilha de tesouraria (modelo)</a>
+  <a href="/downloads/carta_pastoral.pdf">Carta pastoral sobre dízimo</a>
+  <a href="/downloads/RECIBO_CONGRUA.XLSX">Recibo de côngrua pastoral</a>
+</body></html>
+"""
+
+
+def test_extrair_links_candidatos_descarta_links_de_download(monkeypatch):
+    monkeypatch.setattr(extrator, "_buscar_html", lambda url, user_agent=None: HTML_COM_DOWNLOADS)
+
+    candidatos = extrator.extrair_links_candidatos(FONTE, PALAVRAS_CHAVE)
+    urls = [url for url, _ in candidatos]
+
+    assert "https://exemplo.com/artigos/tesouraria-na-pratica" in urls
+    # apesar de casarem palavras-chave, os arquivos binários não viram candidatos
+    assert not any(u.lower().endswith((".xls", ".xlsx", ".pdf")) for u in urls)
+
+
+def test_erro_recuperavel_distingue_transitorio_de_permanente():
+    def _erro_status(codigo):
+        resposta = httpx.Response(codigo, request=httpx.Request("GET", "https://x"))
+        return httpx.HTTPStatusError("erro", request=resposta.request, response=resposta)
+
+    assert extrator._erro_recuperavel(_erro_status(503)) is True
+    assert extrator._erro_recuperavel(_erro_status(429)) is True
+    assert extrator._erro_recuperavel(httpx.ConnectTimeout("timeout")) is True
+    assert extrator._erro_recuperavel(_erro_status(403)) is False
+    assert extrator._erro_recuperavel(_erro_status(404)) is False
+    assert extrator._erro_recuperavel(extrator.ConteudoNaoHTML("pdf")) is False
+
+
+class _RespostaHTTPFake:
+    def __init__(self, texto="<html></html>", content_type="text/html; charset=utf-8"):
+        self.text = texto
+        self.headers = {"content-type": content_type}
+
+    def raise_for_status(self):
+        return None
+
+
+class _ClientFake:
+    def __init__(self, resposta, registro):
+        self._resposta = resposta
+        self._registro = registro
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def get(self, url):
+        return self._resposta
+
+
+def test_buscar_html_rejeita_content_type_nao_html(monkeypatch):
+    monkeypatch.setattr(extrator, "_respeitar_rate_limit", lambda url: None)
+    resposta = _RespostaHTTPFake(texto="%PDF-1.7", content_type="application/pdf")
+    monkeypatch.setattr(
+        extrator.httpx, "Client", lambda **kwargs: _ClientFake(resposta, kwargs)
+    )
+
+    with pytest.raises(extrator.ConteudoNaoHTML):
+        extrator._buscar_html("https://exemplo.com/arquivo.pdf")
+
+
+def test_buscar_html_usa_user_agent_da_fonte(monkeypatch):
+    monkeypatch.setattr(extrator, "_respeitar_rate_limit", lambda url: None)
+    capturado = {}
+
+    def _client_fake(**kwargs):
+        capturado.update(kwargs.get("headers", {}))
+        return _ClientFake(_RespostaHTTPFake(), kwargs)
+
+    monkeypatch.setattr(extrator.httpx, "Client", _client_fake)
+
+    extrator._buscar_html("https://exemplo.com/", user_agent="UA-Navegador/1.0")
+    assert capturado["User-Agent"] == "UA-Navegador/1.0"
 
 
 def test_pode_acessar_assume_permitido_quando_robots_txt_falha(monkeypatch):
