@@ -71,11 +71,28 @@ def eixos_recentes(estado: dict, n: int) -> list[str]:
     return [p["eixo"] for p in historico[-n:] if p.get("eixo")]
 
 
-def registrar_post_publicado(estado: dict, eixo: str, palavra_chave: str, titulo: str) -> None:
-    """Anexa ao histórico o post recém-publicado, para alimentar o cooldown de eixos."""
+def registrar_post_publicado(
+    estado: dict, eixo: str, angulo: str, palavra_chave: str, titulo: str
+) -> None:
+    """Anexa ao histórico o post recém-publicado, para alimentar o cooldown de eixos e a rotação
+    de ângulos.
+
+    ``angulo`` é o subtema canônico escolhido pela seleção (um ``PalavraChave.termo`` do
+    catálogo) — é ele que rotaciona a pauta. ``palavra_chave`` é a keyword de SEO livre escolhida
+    pelo LLM para o post (usada só para relatório), que raramente coincide com um termo do
+    catálogo e por isso não serve de chave de rotação.
+    """
     estado.setdefault("historico_posts", []).append({
         "eixo": eixo,
+        "angulo": angulo,
         "palavra_chave": palavra_chave,
         "titulo": titulo,
         "publicado_em": datetime.now(timezone.utc).isoformat(),
     })
+
+
+def angulos_publicados(estado: dict) -> list[str]:
+    """Ângulos (subtemas) já publicados, em ordem cronológica (mais antigo primeiro). Ignora
+    entradas antigas sem o campo ``angulo``. Usado para priorizar ângulos inéditos e, entre os
+    já usados, o menos recente (LRU)."""
+    return [p["angulo"] for p in estado.get("historico_posts", []) if p.get("angulo")]

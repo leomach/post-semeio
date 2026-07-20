@@ -13,6 +13,10 @@ OUTPUT_DIR = BASE_DIR / "output"
 
 FONTES_PATH = DATA_DIR / "fontes.yaml"
 ESTADO_PATH = DATA_DIR / "estado.json"
+# Corpus persistente de artigos extraídos (corpo completo), acumulado ao longo dos ciclos e
+# versionado no git (commitado pelo CI). É o que permite gerar posts sobre subtemas diferentes
+# a partir do mesmo material mesmo quando não há artigo novo no ciclo.
+CORPUS_PATH = DATA_DIR / "corpus.json"
 
 CONTEUDO_EXTRAIDO_PATH = OUTPUT_DIR / "conteudo_extraido.json"
 ARTIGO_PATH = OUTPUT_DIR / "artigo.md"
@@ -33,6 +37,18 @@ RATE_LIMIT_SECONDS = float(os.environ.get("SCRAPER_RATE_LIMIT_SECONDS", "4"))
 HTTP_TIMEOUT_SECONDS = 20
 MAX_RETRIES = 3
 CIRCUIT_BREAKER_FALHAS_CONSECUTIVAS = 3
+
+# Corpus / seleção de ângulo (subtema)
+# Teto do corpus: ao ultrapassar, os artigos mais antigos são podados (por data de inclusão).
+CORPUS_MAX_ARTIGOS = int(os.environ.get("CORPUS_MAX_ARTIGOS") or "500")
+# Quantos artigos de suporte (os mais relevantes para o ângulo) alimentam a sumarização.
+ANGULO_TOP_K_ARTIGOS = int(os.environ.get("ANGULO_TOP_K_ARTIGOS") or "5")
+# Teto de caracteres do contexto enviado ao LLM na sumarização (bound de tokens/custo).
+ANGULO_MAX_CHARS_CONTEXTO = int(os.environ.get("ANGULO_MAX_CHARS_CONTEXTO") or "24000")
+# Mínimo de artigos de suporte para um subtema ser elegível como ângulo (evita pauta sem lastro).
+ANGULO_MIN_SUPORTE = int(os.environ.get("ANGULO_MIN_SUPORTE") or "1")
+# Tentativas de geração: se um ângulo falhar na validação do post, tenta o próximo elegível.
+ANGULO_MAX_TENTATIVAS = int(os.environ.get("ANGULO_MAX_TENTATIVAS") or "3")
 
 # LLM
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-2.5-pro"

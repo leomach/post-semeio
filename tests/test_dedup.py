@@ -67,11 +67,14 @@ def test_ja_processado_detecta_link_registrado():
 
 def test_registrar_post_publicado_anexa_ao_historico():
     estado = {}
-    dedup.registrar_post_publicado(estado, "rotina-financeira", "conciliação bancária", "Título")
+    dedup.registrar_post_publicado(
+        estado, "rotina-financeira", "prestação de contas", "conciliação bancária", "Título"
+    )
 
     assert len(estado["historico_posts"]) == 1
     entrada = estado["historico_posts"][0]
     assert entrada["eixo"] == "rotina-financeira"
+    assert entrada["angulo"] == "prestação de contas"
     assert entrada["palavra_chave"] == "conciliação bancária"
     assert entrada["titulo"] == "Título"
     assert "publicado_em" in entrada
@@ -80,8 +83,20 @@ def test_registrar_post_publicado_anexa_ao_historico():
 def test_eixos_recentes_retorna_ultimos_n_em_ordem_cronologica():
     estado = {}
     for eixo in ("a", "b", "c", "d"):
-        dedup.registrar_post_publicado(estado, eixo, "pc", "t")
+        dedup.registrar_post_publicado(estado, eixo, "ang", "pc", "t")
 
     assert dedup.eixos_recentes(estado, 3) == ["b", "c", "d"]
     assert dedup.eixos_recentes(estado, 0) == []
     assert dedup.eixos_recentes({}, 3) == []
+
+
+def test_angulos_publicados_em_ordem_e_ignora_sem_angulo():
+    estado = {
+        "historico_posts": [
+            {"eixo": "a", "angulo": "tesouraria"},
+            {"eixo": "b"},  # entrada antiga sem ângulo — deve ser ignorada
+            {"eixo": "c", "angulo": "LGPD"},
+        ]
+    }
+    assert dedup.angulos_publicados(estado) == ["tesouraria", "LGPD"]
+    assert dedup.angulos_publicados({}) == []

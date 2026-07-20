@@ -5,6 +5,7 @@ import re
 import unicodedata
 
 from src.config import (
+    ANGULO_MAX_TENTATIVAS,
     ARTIGO_MIN_SUBTITULOS,
     ARTIGO_PATH,
     BLOG_CONTEUDO_MIN_PALAVRAS,
@@ -21,7 +22,7 @@ from src.generator.json_util import limpar_json
 from src.generator.llm_client import gerar
 from src.generator.prompts.artigo import montar_prompt_artigo
 from src.generator.prompts.sumarizacao import montar_prompt_sumarizacao
-from src.generator.selecao import selecionar_pauta
+from src.generator.selecao import selecionar_angulo
 from src.scraper.fontes import PalavraChave
 
 logger = logging.getLogger(__name__)
@@ -136,18 +137,10 @@ def _montar_post(dados: dict) -> dict:
     }
 
 
-def gerar_post_blog(
-    artigos_extraidos: list[dict],
-    palavras_chave: list[PalavraChave],
-    estado: dict,
-    cooldown_posts: int,
-) -> tuple[dict, str]:
-    """Gera o post de blog a partir do eixo temático escolhido (respeitando o cooldown) e
-    devolve ``(post, eixo)``. O ``eixo`` deve ser registrado no estado pelo chamador."""
-    eixo, artigos_relevantes = selecionar_pauta(
-        artigos_extraidos, palavras_chave, estado, cooldown_posts
-    )
-    prompt_sumarizacao = montar_prompt_sumarizacao(artigos_relevantes)
+def _gerar_post_de_angulo(angulo: str, artigos_suporte: list[dict]) -> dict:
+    """Sumariza o material sob o foco do ângulo, gera o post e valida. Levanta ``ValueError`` se
+    a resposta do LLM não for JSON válido ou o post reprovar na validação estrutural."""
+    prompt_sumarizacao = montar_prompt_sumarizacao(artigos_suporte, angulo)
     contexto_unificado = gerar(prompt_sumarizacao)
 
     prompt_artigo = montar_prompt_artigo(contexto_unificado)
@@ -160,17 +153,66 @@ def gerar_post_blog(
 
     post = _montar_post(dados)
     _validar_post(post)
+    return post
 
-    POST_BLOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(POST_BLOG_PATH, "w", encoding="utf-8") as f:
-        json.dump(post, f, ensure_ascii=False, indent=2)
 
-    # artigo.md: versão legível/renderizável (título como H1 + conteúdo em H2+), usada como
-    # base para o carrossel e mantida por compatibilidade com o critério de aceite do Módulo 2.
-    with open(ARTIGO_PATH, "w", encoding="utf-8") as f:
-        f.write(f"# {post['titulo']}\n\n{post['conteudo']}\n")
+def gerar_post_blog(
+    corpus_artigos: list[dict],
+    fresh_artigos: list[dict],
+    palavras_chave: list[PalavraChave],
+    estado: dict,
+    cooldown_posts: int,
+    max_tentativas: int = ANGULO_MAX_TENTATIVAS,
+) -> tuple[dict, str, str]:
+    """Gera o post de blog escolhendo um ângulo (subtema) com lastro no material — preferindo o
+    fresco e caindo no corpus — e devolve ``(post, eixo, angulo)``. ``eixo``/``angulo`` devem ser
+    registrados no estado pelo chamador.
 
-    return post, eixo
+    Se a geração falhar para um ângulo (JSON inválido ou post reprovado na validação), tenta o
+    próximo ângulo elegível, até ``max_tentativas``. Levanta ``ValueError`` se nenhum ângulo
+    resultar em post válido (ou se não houver ângulo com lastro)."""
+    excluir: set[str] = set()
+    ultimo_erro: Exception | None = None
+
+    for tentativa in range(1, max_tentativas + 1):
+        try:
+            eixo, angulo, artigos_suporte = selecionar_angulo(
+                corpus_artigos,
+                palavras_chave,
+                estado,
+                cooldown_posts,
+                fresh_artigos=fresh_artigos,
+                excluir_angulos=frozenset(excluir),
+            )
+        except ValueError:
+            # Esgotaram os ângulos elegíveis (todos os tentados falharam). Propaga o erro de
+            # geração mais recente, que é mais informativo que "sem lastro".
+            if ultimo_erro is not None:
+                raise ultimo_erro
+            raise
+        try:
+            post = _gerar_post_de_angulo(angulo, artigos_suporte)
+        except ValueError as exc:
+            ultimo_erro = exc
+            excluir.add(angulo)
+            logger.warning(
+                "Geração falhou para o ângulo '%s' (tentativa %d/%d): %s — tentando o próximo",
+                angulo, tentativa, max_tentativas, exc,
+            )
+            continue
+
+        POST_BLOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(POST_BLOG_PATH, "w", encoding="utf-8") as f:
+            json.dump(post, f, ensure_ascii=False, indent=2)
+
+        # artigo.md: versão legível/renderizável (título como H1 + conteúdo em H2+), usada como
+        # base para o carrossel e mantida por compatibilidade com o critério de aceite do Módulo 2.
+        with open(ARTIGO_PATH, "w", encoding="utf-8") as f:
+            f.write(f"# {post['titulo']}\n\n{post['conteudo']}\n")
+
+        return post, eixo, angulo
+
+    raise ultimo_erro or ValueError("Não foi possível gerar um post válido de nenhum ângulo")
 
 
 def markdown_do_post(post: dict) -> str:
