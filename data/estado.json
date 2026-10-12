@@ -887,6 +887,36 @@
       "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
       "titulo": "Reforma tributária para igrejas: IBS e CBS | Oikonomia",
       "processado_em": "2026-10-05T20:27:50.174237+00:00"
+    },
+    "0d8408d370f421c3848459b8d854f4c93028c5aff513b7b02f3f51479996989a": {
+      "url": "https://canellaesantos.com/lgpd-e-empresas-responsabilidades-legais-com-a-protecao-de-dados/",
+      "fonte": "Canella & Santos - Blog Contabilidade",
+      "titulo": "Precisa de ajuda com esse assunto? Fale com a gente.",
+      "processado_em": "2026-10-12T21:08:19.265221+00:00"
+    },
+    "48c35880e28fbf39c082bb64dd48faa18cf5a2a07b60a9df41ca3248a316dcf9": {
+      "url": "https://oikonomiacontabilidade.com/blog/alvara-funcionamento-avcb-igrejas.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Alvará e AVCB para templos: o que a Igreja precisa | Oikonomia",
+      "processado_em": "2026-10-12T21:09:45.432915+00:00"
+    },
+    "52933ca013471c683dd990e59443850a7bd716a9a246896d8750450b02350af9": {
+      "url": "https://oikonomiacontabilidade.com/blog/isencao-iptu-itbi-ipva-igrejas.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "IPTU, ITBI e IPVA: imunidade da Igreja explicada | Oikonomia",
+      "processado_em": "2026-10-12T21:09:45.432942+00:00"
+    },
+    "b140e7023fd1e0fe1b6d52927b525557ddec4d9c84e7cae0052f1e10ce04db56": {
+      "url": "https://oikonomiacontabilidade.com/blog/ecf-efd-reinf-esocial-igrejas.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "ECF, EFD-Reinf e eSocial da Igreja: quem entrega | Oikonomia",
+      "processado_em": "2026-10-12T21:09:45.432954+00:00"
+    },
+    "71969740f4428dc60bf58e1790afabeb809187f7fab4830646554c0e81cafb75": {
+      "url": "https://gruponovacont.com.br/ong-no-rj-evite-glosas-em-editais-com-auditoria-contabil-para-terceiro-setor/",
+      "fonte": "Grupo Nova Cont - Blog (Terceiro Setor e Contabilidade)",
+      "titulo": "Auditoria Contábil para Terceiro Setor: Evite Glosas 2026",
+      "processado_em": "2026-10-12T21:10:04.670827+00:00"
     }
   },
   "historico_posts": [
@@ -959,6 +989,13 @@
       "palavra_chave": "prestação de contas da igreja",
       "titulo": "Prestação de Contas da Igreja: Transparência e Rigor na Gestão Presbiteriana",
       "publicado_em": "2026-10-05T20:28:04.837673+00:00"
+    },
+    {
+      "eixo": "teologia-mordomia",
+      "angulo": "vocação",
+      "palavra_chave": "gestão financeira da igreja",
+      "titulo": "A Vocação do Tesoureiro: Teologia Reformada e a Gestão Financeira da Igreja",
+      "publicado_em": "2026-10-12T21:10:22.361751+00:00"
     }
   ]
 }
