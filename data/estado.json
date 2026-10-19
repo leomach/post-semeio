@@ -917,6 +917,30 @@
       "fonte": "Grupo Nova Cont - Blog (Terceiro Setor e Contabilidade)",
       "titulo": "Auditoria Contábil para Terceiro Setor: Evite Glosas 2026",
       "processado_em": "2026-10-12T21:10:04.670827+00:00"
+    },
+    "d5b694c3da9fab60036c7159c8b7e3ed1a40eae15ae294e5355edb7e1205d294": {
+      "url": "https://canellaesantos.com/13o-salario-de-2026-prazos-calculo-e-os-erros-que-geram-multa/",
+      "fonte": "Canella & Santos - Blog Contabilidade",
+      "titulo": "Precisa de ajuda com esse assunto? Fale com a gente.",
+      "processado_em": "2026-10-19T18:35:44.637951+00:00"
+    },
+    "ff658367e8cc40fb088e88bb276757ba0f68dc8812deea9a75646b6711c82222": {
+      "url": "https://oikonomiacontabilidade.com/blog/estatuto-social-igreja.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Estatuto social da Igreja: o que precisa ter | Oikonomia",
+      "processado_em": "2026-10-19T18:37:13.125379+00:00"
+    },
+    "9ef0fe06aa14a1bca69b018e3460abaaab459820da3cf7176b4f891848665396": {
+      "url": "https://oikonomiacontabilidade.com/blog/filial-congregacao-cnpj-igreja.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Como abrir filial ou congregação com CNPJ | Oikonomia",
+      "processado_em": "2026-10-19T18:37:13.125407+00:00"
+    },
+    "ea1962405f18c3f8f273b1de8a32ce6c2be2ab08d66f2d14e95e5d8c41ff37b5": {
+      "url": "https://oikonomiacontabilidade.com/blog/gestao-igreja-batista-assembleia-convencao.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Gestão da igreja batista: assembleia e convenção | Oikonomia",
+      "processado_em": "2026-10-19T18:37:13.125424+00:00"
     }
   },
   "historico_posts": [
@@ -996,6 +1020,13 @@
       "palavra_chave": "gestão financeira da igreja",
       "titulo": "A Vocação do Tesoureiro: Teologia Reformada e a Gestão Financeira da Igreja",
       "publicado_em": "2026-10-12T21:10:22.361751+00:00"
+    },
+    {
+      "eixo": "governo-presbiteriano",
+      "angulo": "assembleia",
+      "palavra_chave": "assembleia geral da igreja",
+      "titulo": "A importância jurídica e administrativa da assembleia geral da igreja na IPB",
+      "publicado_em": "2026-10-19T18:37:30.883519+00:00"
     }
   ]
 }
