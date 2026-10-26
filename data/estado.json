@@ -941,6 +941,42 @@
       "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
       "titulo": "Gestão da igreja batista: assembleia e convenção | Oikonomia",
       "processado_em": "2026-10-19T18:37:13.125424+00:00"
+    },
+    "d2d5389cf04a531463760fb6f4054e887a60972defac91b29226915a390d7fbb": {
+      "url": "https://voltemosaoevangelho.com/blog/assunto/teologia-reformada/",
+      "fonte": "Voltemos ao Evangelho - Vida Cristã e Mordomia",
+      "titulo": "Arquivo para Teologia Reformada - Voltemos Ao Evangelho",
+      "processado_em": "2026-10-26T18:34:08.930515+00:00"
+    },
+    "60e0d25df94f63445e2c85cd67bb3a62b473ad71572ca081065f7aec58ef9b73": {
+      "url": "https://voltemosaoevangelho.com/blog/assunto/vida-crista/",
+      "fonte": "Voltemos ao Evangelho - Vida Cristã e Mordomia",
+      "titulo": "Arquivo para Vida Cristã - Voltemos Ao Evangelho",
+      "processado_em": "2026-10-26T18:34:08.930557+00:00"
+    },
+    "198373e56af16765e54129b309c51e318c470f39e103d953785825eb3e108d18": {
+      "url": "https://voltemosaoevangelho.com/blog/2026/04/o-que-a-ressurreicao-de-jesus-realmente-significa-para-a-vida-crista/",
+      "fonte": "Voltemos ao Evangelho - Vida Cristã e Mordomia",
+      "titulo": "O que a ressurreição de Jesus realmente significa para a vida cristã?",
+      "processado_em": "2026-10-26T18:34:08.930577+00:00"
+    },
+    "ad021fd555b90cfd7b488a52fe1b661c7da15a7e64f3e64cc209f964b62ad311": {
+      "url": "https://oikonomiacontabilidade.com/blog/conta-bancaria-pj-igreja.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Conta bancária PJ da Igreja: o que o banco pede | Oikonomia",
+      "processado_em": "2026-10-26T18:34:24.907808+00:00"
+    },
+    "401ea7d99615f122513e0a189128fe2de0af7f9f1628302958ffc3f161e65cc7": {
+      "url": "https://oikonomiacontabilidade.com/blog/transferir-imovel-pastor-cnpj-igreja.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Transferir imóvel do pastor pro CNPJ da Igreja | Oikonomia",
+      "processado_em": "2026-10-26T18:34:24.907838+00:00"
+    },
+    "8cfd86985e03b43b66a83cde8d9bc77a49d186ab2764c8351962e205a256dafe": {
+      "url": "https://gruponovacont.com.br/alteracao-de-diretoria-de-igreja-em-nova-iguacu-como-fazer-sem-travar-banco-e-cartorio/",
+      "fonte": "Grupo Nova Cont - Blog (Terceiro Setor e Contabilidade)",
+      "titulo": "Alteração de Diretoria de Igreja em Nova Iguaçu: Sem Travar Banco E Cartório 2026",
+      "processado_em": "2026-10-26T18:34:59.941708+00:00"
     }
   },
   "historico_posts": [
@@ -1027,6 +1063,13 @@
       "palavra_chave": "assembleia geral da igreja",
       "titulo": "A importância jurídica e administrativa da assembleia geral da igreja na IPB",
       "publicado_em": "2026-10-19T18:37:30.883519+00:00"
+    },
+    {
+      "eixo": "fiscal-tributario",
+      "angulo": "cartório",
+      "palavra_chave": "regularização de imóveis de igrejas",
+      "titulo": "Regularização de Imóveis de Igrejas: Segurança Jurídica e Cartórios",
+      "publicado_em": "2026-10-26T18:35:18.890844+00:00"
     }
   ]
 }
