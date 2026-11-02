@@ -977,6 +977,48 @@
       "fonte": "Grupo Nova Cont - Blog (Terceiro Setor e Contabilidade)",
       "titulo": "Alteração de Diretoria de Igreja em Nova Iguaçu: Sem Travar Banco E Cartório 2026",
       "processado_em": "2026-10-26T18:34:59.941708+00:00"
+    },
+    "26c2f92aff179ee227f9a9dfc7300aac9cb838bfce8f4ffdee4b4b9a353a0cfa": {
+      "url": "https://alvescontabilidade.com.br/2026/10/08/contabilidade-para-igrejas-em-sao-paulo/",
+      "fonte": "Alves Contabilidade - Centros Religiosos",
+      "titulo": "Contabilidade para igrejas em São Paulo: o que pastores e dirigentes precisam saber Alves Contabilidade Igrejas e Centros Religiosos",
+      "processado_em": "2026-11-02T21:37:12.701787+00:00"
+    },
+    "3e28cdd05da97361e63aa35b114a779bce6d06495e9123666569497d5ad9ee32": {
+      "url": "https://alvescontabilidade.com.br/2026/10/07/prestacao-de-contas-de-igreja-receitas-despesas/",
+      "fonte": "Alves Contabilidade - Centros Religiosos",
+      "titulo": "Prestação de contas de igreja: como organizar receitas, despesas e documentos financeiros Alves Contabilidade Igrejas e Centros Religiosos",
+      "processado_em": "2026-11-02T21:37:12.701827+00:00"
+    },
+    "29b066e34ee92489f010cf3d0933f9f696ededd4b9181178fe48021e05f1c890": {
+      "url": "https://alvescontabilidade.com.br/2026/10/13/como-regularizar-uma-igreja/",
+      "fonte": "Alves Contabilidade - Centros Religiosos",
+      "titulo": "Como Regularizar uma Igreja: CNPJ, Estatuto, Documentos e Contabilidade Especializada Alves Contabilidade Igrejas e Centros Religiosos",
+      "processado_em": "2026-11-02T21:37:12.701844+00:00"
+    },
+    "9200db827b4446226b46cd774146ab96311d088b6152c5b4db4c33c5b9c66dc0": {
+      "url": "https://alvescontabilidade.com.br/2026/10/13/como-registrar-e-regularizar-uma-igreja-documentos-cnpj-e-contabilidade/",
+      "fonte": "Alves Contabilidade - Centros Religiosos",
+      "titulo": "Como Registrar e Regularizar uma Igreja: Documentos, CNPJ e Contabilidade Alves Contabilidade Igrejas e Centros Religiosos",
+      "processado_em": "2026-11-02T21:37:12.701856+00:00"
+    },
+    "1cfe4c5b9341802ecbd4acffb2382b200f99fe507a563e9d28c131e478896577": {
+      "url": "https://oikonomiacontabilidade.com/blog/lgpd-igrejas-cadastro-membros.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "LGPD para Igreja: cadastro de membros | Oikonomia",
+      "processado_em": "2026-11-02T21:37:28.951059+00:00"
+    },
+    "1a63a4469a224475bb0a27e4b5c65d188a99c5ddd7a523df06dbd346fc2e4dc4": {
+      "url": "https://oikonomiacontabilidade.com/blog/plano-de-contas-escrituracao-igreja.html",
+      "fonte": "Oikonomia Contabilidade - Blog (Gestão e Tesouraria de Igrejas)",
+      "titulo": "Plano de contas e escrituração de Igreja | Oikonomia",
+      "processado_em": "2026-11-02T21:37:28.951088+00:00"
+    },
+    "11774d20f01497a2f195f45c03519bf9a5b3c8c21da915e1a0b67250f4543cc0": {
+      "url": "https://inchurch.com.br/blog/como-tirar-cnpj-igreja/",
+      "fonte": "inChurch - Blog (Gestão de Igrejas)",
+      "titulo": "Como tirar CNPJ de igreja: passo a passo completo",
+      "processado_em": "2026-11-02T21:37:34.827430+00:00"
     }
   },
   "historico_posts": [
@@ -1070,6 +1112,13 @@
       "palavra_chave": "regularização de imóveis de igrejas",
       "titulo": "Regularização de Imóveis de Igrejas: Segurança Jurídica e Cartórios",
       "publicado_em": "2026-10-26T18:35:18.890844+00:00"
+    },
+    {
+      "eixo": "rotina-financeira",
+      "angulo": "escrituração",
+      "palavra_chave": "escrituração contábil da igreja",
+      "titulo": "Escrituração Contábil da Igreja: Fundamentos Legais e Boas Práticas para Tesourarias",
+      "publicado_em": "2026-11-02T21:37:58.863988+00:00"
     }
   ]
 }
