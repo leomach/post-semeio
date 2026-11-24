@@ -172,3 +172,21 @@ def test_gerar_post_blog_tenta_proximo_angulo_quando_um_falha(monkeypatch, tmp_p
 
     assert angulo == "tesouraria"  # imunidade tributária foi descartada após a falha
     assert eixo == "rotina-financeira"
+
+
+def test_metricas_legibilidade_ignora_titulos_e_listas():
+    conteudo = (
+        "## Um título longo que não deve contar como frase de jeito nenhum\n\n"
+        "A tesouraria confere o extrato. O Conselho aprova o mês.\n\n"
+        "- um item de lista bem comprido que também fica fora da conta da média\n"
+    )
+    metricas = artigo.metricas_legibilidade(conteudo)
+    assert metricas["palavras_por_frase"] == 5.0
+    assert metricas["expressoes_pesadas"] == []
+
+
+def test_metricas_legibilidade_acusa_expressoes_pesadas():
+    conteudo = "## Seção\n\nÉ fundamental conferir o caixa. Nesse sentido, vale ressaltar o extrato."
+    assert artigo.metricas_legibilidade(conteudo)["expressoes_pesadas"] == [
+        "é fundamental", "nesse sentido", "vale ressaltar",
+    ]
