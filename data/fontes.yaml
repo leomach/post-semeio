@@ -103,11 +103,42 @@ fontes:
     url_base: "https://cpaj.mackenzie.br/artigos-e-ensaios/"
     ativo: false
 
+  # ---------------------------------------------------------------------------------
+  # Fontes da IPB adicionadas em nov/2026 (notícias da denominação e sociedades internas).
+  # O portal ipb.org.br e o executivaipb.com.br não servem: o primeiro não traz notícias no
+  # HTML, o segundo só tem PDFs. Constituição, Código de Disciplina, Princípios de Liturgia e
+  # Manual Unificado das Sociedades Internas só existem em PDF — fora do alcance do extrator.
+  # ---------------------------------------------------------------------------------
+  # Sem barra final: os links da listagem são relativos ("./blog/1918/..."), e com "/blog/" o
+  # urljoin geraria "/blog/blog/...".
+  - nome: "UPH - Confederação Nacional de Homens Presbiterianos (Blog)"
+    url_base: "https://www.uph.org.br/blog"
+    ativo: true
+
+  # Vários posts da SAF são só um link para PDF; esses rendem pouco texto.
+  - nome: "CNSAFs - Confederação Nacional das SAFs"
+    url_base: "https://www.saf.org.br/"
+    ativo: true
+
+  - nome: "CNSAFs - Tesouraria"
+    url_base: "https://www.saf.org.br/category/tesouraria/"
+    ativo: true
+
+  # Sem www: o www.ump.org.br responde 503.
+  - nome: "UMP - Confederação Nacional de Mocidade Presbiteriana (Blog)"
+    url_base: "https://ump.org.br/blog/"
+    ativo: true
+
+  - nome: "Editora Cultura Cristã - Servos Ordenados (oficiais da igreja)"
+    url_base: "https://blog.editoraculturacrista.com.br/category/servos-ordenados/"
+    ativo: true
+
 # O campo `eixo` agrupa palavras-chave por assunto. O gerador usa o eixo para diversificar as
 # pautas: um eixo publicado recentemente entra em "cooldown" (ver TEMA_COOLDOWN_POSTS em
 # src/config.py) e não é escolhido como base de um novo post, evitando repetir o mesmo assunto
 # em posts seguidos. Eixos atuais: rotina-financeira, fiscal-tributario, governo-presbiteriano,
-# teologia-mordomia.
+# teologia-mordomia, sociedades-internas, concilios-sc, documentos-oficiais, noticias-ipb,
+# missoes, liturgia-calendario, vida-igreja-local.
 palavras_chave:
   # --- EIXO: ROTINA FINANCEIRA E CONTÁBIL (dia a dia da tesouraria) ---
   - termo: "tesouraria"
@@ -167,9 +198,6 @@ palavras_chave:
     eixo: governo-presbiteriano
   - termo: "presbitério"
     peso: 2
-    eixo: governo-presbiteriano
-  - termo: "supremo concílio"
-    peso: 1
     eixo: governo-presbiteriano
   - termo: "sínodo"
     peso: 1
@@ -365,3 +393,182 @@ palavras_chave:
   - termo: "santidade"
     peso: 1
     eixo: teologia-mordomia
+
+  # ===================================================================================
+  # EIXOS DA IPB (nov/2026): notícias da denominação, concílios, documentos oficiais e
+  # sociedades internas. Ficaram de fora siglas que casam dentro de outras palavras:
+  # "ump" (cumprimento), "upa" (ocupa), "saf" (safra), "culto" (oculto), "natal" (a cidade).
+  # ===================================================================================
+
+  # --- EIXO: SOCIEDADES INTERNAS (SAF, UPH, UMP, UPA, UCP — sempre sob a supervisão do Conselho) ---
+  - termo: "sociedades internas"
+    peso: 3
+    eixo: sociedades-internas
+  - termo: "contribuição anual"
+    peso: 3
+    eixo: sociedades-internas
+  - termo: "safs"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "saf nacional"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "sociedade auxiliadora feminina"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "trabalho feminino"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "trabalho masculino"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "homens presbiterianos"
+    peso: 2
+    eixo: sociedades-internas
+  - termo: "mocidade presbiteriana"
+    peso: 2
+    eixo: sociedades-internas
+
+  # --- EIXO: CONCÍLIOS E SUPREMO CONCÍLIO ---
+  - termo: "supremo concílio"
+    peso: 2
+    eixo: concilios-sc
+  - termo: "comissão executiva"
+    peso: 2
+    eixo: concilios-sc
+  - termo: "quadriênio"
+    peso: 2
+    eixo: concilios-sc
+  - termo: "concílio"
+    peso: 1
+    eixo: concilios-sc
+  - termo: "sinodal"
+    peso: 1
+    eixo: concilios-sc
+  - termo: "congresso nacional"
+    peso: 1
+    eixo: concilios-sc
+  - termo: "secretaria executiva"
+    peso: 1
+    eixo: concilios-sc
+  - termo: "tribunal de recursos"
+    peso: 1
+    eixo: concilios-sc
+
+  # --- EIXO: DOCUMENTOS OFICIAIS (raros em títulos; servem mais para casar o corpo dos artigos) ---
+  - termo: "manual presbiteriano"
+    peso: 3
+    eixo: documentos-oficiais
+  - termo: "constituição da ipb"
+    peso: 3
+    eixo: documentos-oficiais
+  - termo: "código de disciplina"
+    peso: 3
+    eixo: documentos-oficiais
+  - termo: "princípios de liturgia"
+    peso: 3
+    eixo: documentos-oficiais
+  - termo: "manual unificado"
+    peso: 3
+    eixo: documentos-oficiais
+  - termo: "guia do trabalho"
+    peso: 2
+    eixo: documentos-oficiais
+  - termo: "guia de trabalho"
+    peso: 2
+    eixo: documentos-oficiais
+  - termo: "regimento interno"
+    peso: 2
+    eixo: documentos-oficiais
+
+  # --- EIXO: NOTÍCIAS DA IPB ---
+  - termo: "igreja presbiteriana do brasil"
+    peso: 2
+    eixo: noticias-ipb
+  - termo: "anos da ipb"
+    peso: 2
+    eixo: noticias-ipb
+  - termo: "brasil presbiteriano"
+    peso: 2
+    eixo: noticias-ipb
+  - termo: "igreja presbiteriana"
+    peso: 1
+    eixo: noticias-ipb
+  - termo: "simonton"
+    peso: 1
+    eixo: noticias-ipb
+
+  # --- EIXO: MISSÕES ---
+  - termo: "natal missionário"
+    peso: 2
+    eixo: missoes
+  - termo: "projeto missionário"
+    peso: 2
+    eixo: missoes
+  - termo: "trabalho missionário"
+    peso: 2
+    eixo: missoes
+  - termo: "campo missionário"
+    peso: 2
+    eixo: missoes
+  - termo: "missões"
+    peso: 2
+    eixo: missoes
+  - termo: "plantação de igrejas"
+    peso: 2
+    eixo: missoes
+  - termo: "ação evangelística"
+    peso: 1
+    eixo: missoes
+  - termo: "evangelização"
+    peso: 1
+    eixo: missoes
+
+  # --- EIXO: LITURGIA E CALENDÁRIO ---
+  - termo: "liturgia"
+    peso: 2
+    eixo: liturgia-calendario
+  - termo: "culto doméstico"
+    peso: 2
+    eixo: liturgia-calendario
+  - termo: "santa ceia"
+    peso: 2
+    eixo: liturgia-calendario
+  - termo: "reforma protestante"
+    peso: 2
+    eixo: liturgia-calendario
+  - termo: "adoração"
+    peso: 1
+    eixo: liturgia-calendario
+  - termo: "advento"
+    peso: 1
+    eixo: liturgia-calendario
+  - termo: "salmos"
+    peso: 1
+    eixo: liturgia-calendario
+
+  # --- EIXO: VIDA DA IGREJA LOCAL (oficiais, Conselho, sustento) ---
+  - termo: "sustento pastoral"
+    peso: 3
+    eixo: vida-igreja-local
+  - termo: "aposentadoria"
+    peso: 2
+    eixo: vida-igreja-local
+  - termo: "eleição de oficiais"
+    peso: 2
+    eixo: vida-igreja-local
+  - termo: "assembleia geral"
+    peso: 2
+    eixo: vida-igreja-local
+  - termo: "diaconia"
+    peso: 2
+    eixo: vida-igreja-local
+  - termo: "escola dominical"
+    peso: 2
+    eixo: vida-igreja-local
+  - termo: "acolhimento"
+    peso: 1
+    eixo: vida-igreja-local
+  - termo: "ordenação"
+    peso: 1
+    eixo: vida-igreja-local
