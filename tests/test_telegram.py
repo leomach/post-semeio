@@ -151,3 +151,39 @@ def test_enviar_carrossel_envia_cabecalho_slides_legenda_e_hashtags(monkeypatch)
     assert "Gancho inicial" in corpo
     assert "Legenda de teste" in corpo
     assert "#tesouraria" in corpo
+
+
+def test_enviar_publicacao_manda_links_do_site_e_do_admin(monkeypatch):
+    enviados = []
+    monkeypatch.setattr(telegram, "_enviar", lambda texto: enviados.append(texto))
+
+    telegram.enviar_publicacao(
+        {"titulo": "Como organizar a tesouraria"},
+        {"status": "publicado", "url": "https://somossemeio.com.br/blog/x/",
+         "admin_url": "https://api.somossemeio.com.br/admin/institucional/post/7/change/", "ja_existia": False},
+    )
+
+    assert len(enviados) == 1
+    assert "POST PUBLICADO NO BLOG" in enviados[0]
+    assert "https://somossemeio.com.br/blog/x/" in enviados[0]
+    assert "/admin/institucional/post/7/change/" in enviados[0]
+
+
+def test_enviar_publicacao_avisa_rascunho_e_reenvio(monkeypatch):
+    enviados = []
+    monkeypatch.setattr(telegram, "_enviar", lambda texto: enviados.append(texto))
+
+    telegram.enviar_publicacao({"titulo": "T"}, {"status": "rascunho", "ja_existia": False})
+    telegram.enviar_publicacao({"titulo": "T"}, {"status": "publicado", "ja_existia": True})
+
+    assert "RASCUNHO" in enviados[0]
+    assert "JÁ ESTAVA NO BLOG" in enviados[1]
+
+
+def test_fallback_avisa_que_a_publicacao_falhou(monkeypatch):
+    enviados = []
+    monkeypatch.setattr(telegram, "_enviar", lambda texto: enviados.append(texto))
+
+    telegram.enviar_post_blog({"titulo": "T", "conteudo": "## A\n\ntexto", "tags": []}, falha_publicacao=True)
+
+    assert enviados[0] == telegram.CABECALHO_FALHA_PUBLICACAO

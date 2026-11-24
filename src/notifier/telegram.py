@@ -7,6 +7,9 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 from src.config import HTTP_TIMEOUT_SECONDS, MAX_RETRIES, TELEGRAM_API_BASE, TELEGRAM_MAX_MENSAGEM
 
 CABECALHO_ARTIGO = "📄 POST PARA O BLOG"
+CABECALHO_FALHA_PUBLICACAO = (
+    "⚠️ A publicação automática no blog falhou — publique manualmente com os campos abaixo."
+)
 CABECALHO_CONTEUDO = "📝 CONTEÚDO (Markdown)"
 CABECALHO_CARROSSEL = "📱 ROTEIRO PARA INSTAGRAM"
 
@@ -77,8 +80,35 @@ def _formatar_metadados_post(post: dict) -> str:
     return "\n\n".join(linhas)
 
 
-def enviar_post_blog(post: dict) -> None:
-    """Envia os metadados do post e, em seguida, o conteúdo Markdown (RF14/RF16)."""
+def _formatar_publicacao(post: dict, publicacao: dict) -> str:
+    """Aviso curto de que o post já está no blog, com os links para conferir."""
+    if publicacao.get("ja_existia"):
+        titulo = "♻️ POST JÁ ESTAVA NO BLOG (reenvio, nada duplicado)"
+    elif publicacao.get("status") == "rascunho":
+        titulo = "📝 POST CRIADO COMO RASCUNHO — revise e publique no admin"
+    else:
+        titulo = "✅ POST PUBLICADO NO BLOG"
+    linhas = [
+        titulo,
+        f"📌 {post.get('titulo', '')}",
+        f"🔗 No site\n{publicacao.get('url', '')}",
+        f"🛠️ No admin (editar ou despublicar)\n{publicacao.get('admin_url', '')}",
+    ]
+    return "\n\n".join(linhas)
+
+
+def enviar_publicacao(post: dict, publicacao: dict) -> None:
+    """Avisa que o post foi para o blog pela API, com os links do site e do admin."""
+    _enviar(_formatar_publicacao(post, publicacao))
+
+
+def enviar_post_blog(post: dict, falha_publicacao: bool = False) -> None:
+    """Envia os metadados do post e, em seguida, o conteúdo Markdown (RF14/RF16).
+
+    Com ``falha_publicacao``, é o fallback da publicação automática: o aviso vem antes, para
+    ninguém achar que o post já está no ar."""
+    if falha_publicacao:
+        _enviar(CABECALHO_FALHA_PUBLICACAO)
     _enviar(_formatar_metadados_post(post))
     _enviar(CABECALHO_CONTEUDO)
     for pedaco in dividir_mensagem(post.get("conteudo", "")):
