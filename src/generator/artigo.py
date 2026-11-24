@@ -20,7 +20,7 @@ from src.config import (
 )
 from src.generator.json_util import limpar_json
 from src.generator.llm_client import gerar
-from src.generator.prompts.artigo import montar_prompt_artigo
+from src.generator.prompts.artigo import montar_prompt_artigo, montar_prompt_expansao
 from src.generator.prompts.sumarizacao import montar_prompt_sumarizacao
 from src.generator.selecao import selecionar_angulo
 from src.scraper.fontes import PalavraChave
@@ -188,8 +188,25 @@ def _gerar_post_de_angulo(angulo: str, artigos_suporte: list[dict]) -> dict:
         raise ValueError(f"Resposta do LLM não é JSON válido: {exc}") from exc
 
     post = _montar_post(dados)
+    n_palavras = len(post["conteudo"].split())
+    if 0 < n_palavras < BLOG_CONTEUDO_MIN_PALAVRAS:
+        # A escrita leve (frases curtas, sem inventar dados) tende a sair curta; uma chamada de
+        # expansão costuma resolver sem descartar o ângulo.
+        logger.info("Conteúdo com %d palavras — pedindo expansão", n_palavras)
+        expandido = gerar(montar_prompt_expansao(
+            post["conteudo"], contexto_unificado, n_palavras, BLOG_CONTEUDO_MIN_PALAVRAS,
+        ))
+        post["conteudo"] = _remover_code_fence(expandido)
     _validar_post(post)
     return post
+
+
+def _remover_code_fence(texto: str) -> str:
+    """Tira o ```markdown ... ``` que o LLM às vezes põe em volta da resposta."""
+    texto = texto.strip()
+    texto = re.sub(r"^```[a-zA-Z]*\n", "", texto)
+    texto = re.sub(r"\n?```$", "", texto)
+    return texto.strip()
 
 
 def gerar_post_blog(

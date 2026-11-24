@@ -73,7 +73,9 @@ conciliação bancária no contexto eclesiástico").
 chamada que dê vontade de clicar (será usado como meta description).
 - O conteúdo deve ter PROFUNDIDADE REAL: no mínimo 700 palavras (não entregue menos que isso). \
 Profundidade vem de exemplos e explicações práticas, não de frases longas: o texto continua \
-leve e fácil mesmo sendo completo.
+leve e fácil mesmo sendo completo. Para chegar lá, organize o post em 4 a 6 seções `##`, cada \
+uma com 2 a 4 parágrafos curtos, e traga em cada seção pelo menos um exemplo da vida da igreja \
+ou um passo prático.
 - O conteúdo é Markdown e deve começar os títulos de seção em `##` (H2). NÃO use `#` (H1) em \
 nenhum lugar do conteúdo — o H1 é reservado ao título do post, que vai no campo "titulo".
 - Use hierarquia de headings coerente: `##` para seções e `###` para subseções. NUNCA pule \
@@ -101,6 +103,37 @@ seguindo exatamente este formato:
   "tags": ["tag relevante 1", "tag relevante 2"]
 }}
 """
+
+
+PROMPT_EXPANSAO = """Você escreve o blog do Semeio. O post abaixo ficou curto: tem {palavras} \
+palavras e precisa de pelo menos {minimo}. Reescreva-o com pelo menos {alvo} palavras.
+
+Como expandir:
+- Mantenha o mesmo tom leve, as mesmas seções `##` e os links internos que já existem.
+- Ganhe tamanho com exemplos da vida da igreja, passos práticos e perguntas que o leitor faria, \
+não com frases longas nem repetição.
+- Use só fatos do contexto de referência: não invente artigos, resoluções, datas, valores ou \
+estatísticas.
+
+Guia de escrita (obrigatório):
+{guia}
+
+Contexto de referência:
+{contexto}
+
+Post atual (Markdown):
+{conteudo}
+
+Responda APENAS com o conteúdo completo em Markdown, começando pela primeira seção `##`, sem \
+code fence e sem texto antes ou depois.
+"""
+
+
+def montar_prompt_expansao(conteudo: str, contexto: str, palavras: int, minimo: int) -> str:
+    return PROMPT_EXPANSAO.format(
+        palavras=palavras, minimo=minimo, alvo=minimo + 150, guia=GUIA_DE_ESCRITA,
+        contexto=contexto, conteudo=conteudo,
+    )
 
 
 def montar_prompt_artigo(contexto: str) -> str:
