@@ -16,7 +16,7 @@ def _dados_validos() -> dict:
         "## Primeira seção\n\n"
         "A conciliação bancária da igreja é essencial. " + ("palavra " * 620) + "\n\n"
         "## Segunda seção\n\n"
-        "Veja os [recursos do Semeio](/funcionalidades) e os [planos](/precos).\n"
+        "Veja os [recursos do Semeio](/funcionalidades/) e os [planos](/precos/).\n"
     )
     return {
         "palavra_chave": "conciliação bancária da igreja",
@@ -48,7 +48,7 @@ def _post_valido() -> dict:
         "A conciliação bancária da igreja é essencial. " + ("palavra " * 620) + "\n\n"
         "## Segunda seção\n\n"
         "- item um\n- item dois\n\n"
-        "Veja os [recursos do Semeio](/funcionalidades) e os [planos](/precos).\n"
+        "Veja os [recursos do Semeio](/funcionalidades/) e os [planos](/precos/).\n"
     )
     return artigo._montar_post({
         "palavra_chave": "conciliação bancária da igreja",
@@ -95,14 +95,14 @@ def test_validar_post_rejeita_salto_de_heading():
 
 def test_validar_post_rejeita_conteudo_curto():
     post = _post_valido()
-    post["conteudo"] = "## Seção\n\nTexto curto.\n\n## Outra\n\n[link](/precos)"
+    post["conteudo"] = "## Seção\n\nTexto curto.\n\n## Outra\n\n[link](/precos/)"
     with pytest.raises(ValueError, match="palavras"):
         artigo._validar_post(post)
 
 
 def test_validar_post_rejeita_sem_link_interno():
     post = _post_valido()
-    post["conteudo"] = post["conteudo"].replace("(/funcionalidades)", "(https://externo.com)").replace("(/precos)", "(https://externo.com)")
+    post["conteudo"] = post["conteudo"].replace("(/funcionalidades/)", "(https://externo.com)").replace("(/precos/)", "(https://externo.com)")
     with pytest.raises(ValueError, match="link interno"):
         artigo._validar_post(post)
 

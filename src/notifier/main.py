@@ -1,10 +1,14 @@
-"""Entrypoint do Módulo 4 — Notificação via Telegram."""
+"""Entrypoint do Módulo 5 — Notificação via Telegram.
+
+Com a publicação automática (Módulo 4) bem-sucedida, manda só o link do post e o carrossel.
+Sem ela (``publicacao.json`` ausente), manda o post completo para publicação manual.
+"""
 import json
 import logging
 import sys
 
-from src.config import CARROSSEL_PATH, POST_BLOG_PATH
-from src.notifier.telegram import enviar_carrossel, enviar_post_blog
+from src.config import CARROSSEL_PATH, POST_BLOG_PATH, PUBLICACAO_PATH
+from src.notifier.telegram import enviar_carrossel, enviar_post_blog, enviar_publicacao
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -25,8 +29,16 @@ def main() -> int:
     with open(CARROSSEL_PATH, "r", encoding="utf-8") as f:
         carrossel = json.load(f)
 
+    publicacao = None
+    if PUBLICACAO_PATH.exists():
+        with open(PUBLICACAO_PATH, "r", encoding="utf-8") as f:
+            publicacao = json.load(f)
+
     try:
-        enviar_post_blog(post)
+        if publicacao is not None:
+            enviar_publicacao(post, publicacao)
+        else:
+            enviar_post_blog(post, falha_publicacao=True)
         enviar_carrossel(carrossel)
     except Exception:
         logger.error("Falha ao enviar mensagens ao Telegram", exc_info=True)

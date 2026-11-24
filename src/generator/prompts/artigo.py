@@ -47,8 +47,8 @@ nenhum lugar do conteúdo — o H1 é reservado ao título do post, que vai no c
 níveis (ex.: nunca vá de `##` direto para `####`).
 - Use ao menos uma lista (com `-` ou numerada).
 - Inclua ao menos dois links internos em Markdown para páginas do produto Semeio, usando \
-exatamente estes caminhos relativos: `/funcionalidades` e `/precos` (ex.: \
-`[recursos do Semeio](/funcionalidades)`). Os links devem aparecer de forma natural no texto.
+exatamente estes caminhos relativos, com a barra final: `/funcionalidades/` e `/precos/` (ex.: \
+`[recursos do Semeio](/funcionalidades/)`). Os links devem aparecer de forma natural no texto.
 - A palavra-chave principal deve aparecer no primeiro parágrafo do conteúdo.
 
 Contexto de referência:
@@ -61,7 +61,7 @@ seguindo exatamente este formato:
   "titulo": "Título do post com a palavra-chave (H1, sem # no texto)",
   "slug": "slug-curto-com-a-palavra-chave",
   "resumo": "Resumo/meta description entre 150 e 160 caracteres, com a palavra-chave.",
-  "conteudo": "## Primeira seção\\n\\nParágrafo com a palavra-chave...\\n\\n## Segunda seção\\n\\n- item\\n\\n[recursos](/funcionalidades) ...",
+  "conteudo": "## Primeira seção\\n\\nParágrafo com a palavra-chave...\\n\\n## Segunda seção\\n\\n- item\\n\\n[recursos](/funcionalidades/) ...",
   "capa_alt": "Descrição objetiva e descritiva da imagem de capa (acessibilidade + SEO de imagem).",
   "seo_titulo": "Título alternativo para a tag <title>, entre 50 e 60 caracteres.",
   "seo_descricao": "Meta description alternativa, se diferente do resumo.",

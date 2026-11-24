@@ -3,7 +3,13 @@ name: Pipeline Semeio Content
 on:
   schedule:
     - cron: '0 12 * * 1'  # segunda-feira, 12h UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      status:
+        description: 'Como o post entra no blog'
+        type: choice
+        options: [publicado, rascunho]
+        default: publicado
 
 concurrency:
   group: pipeline-semeio
@@ -29,13 +35,25 @@ jobs:
         run: python -m src.scraper.main
 
       - name: Módulo 2+3 - Geração de artigo e carrossel
+        id: gerar
         run: python -m src.generator.main
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           TEMA_COOLDOWN_POSTS: ${{ vars.TEMA_COOLDOWN_POSTS }}
 
-      - name: Módulo 4 - Notificação Telegram
+      # Publica pela API de integração do Django (Bearer token). Execução agendada usa a
+      # variável BLOG_STATUS (padrão: publicado); a manual, a opção escolhida no disparo.
+      - name: Módulo 4 - Publicação no blog do Semeio
+        run: python -m src.publisher.main
+        env:
+          SEMEIO_BLOG_TOKEN: ${{ secrets.SEMEIO_BLOG_TOKEN }}
+          BLOG_STATUS: ${{ inputs.status || vars.BLOG_STATUS }}
+
+      # Roda mesmo se a publicação falhar: sem publicacao.json, o post vai completo ao
+      # Telegram para publicação manual — o conteúdo gerado nunca se perde.
+      - name: Módulo 5 - Notificação Telegram
+        if: always() && steps.gerar.outcome == 'success'
         run: python -m src.notifier.main
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

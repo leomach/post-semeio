@@ -17,8 +17,14 @@ A cada execução (agendada semanalmente ou disparada manualmente), o pipeline:
    publicado fica registrado em `data/estado.json` (`historico_posts`).
 3. **Deriva** um roteiro de carrossel + legenda para Instagram a partir do artigo, salvo em
    `output/carrossel.json`.
-4. **Envia** o post (campos prontos para publicar) e o carrossel formatados para um chat do
-   Telegram (`src/notifier/`), para revisão humana antes da publicação no blog.
+4. **Publica** o post direto no blog do Semeio pela API de integração do Django
+   (`src/publisher/`): `POST https://api.somossemeio.com.br/api/integracao/blog/posts` com
+   `Authorization: Bearer <SEMEIO_BLOG_TOKEN>`. Por padrão o post vai ao ar na hora
+   (`BLOG_STATUS=publicado`); com `BLOG_STATUS=rascunho` fica no admin para revisão. Reenvio
+   do mesmo post (mesmo slug) não duplica. Resposta salva em `output/publicacao.json`.
+5. **Avisa** no Telegram (`src/notifier/`) com o link do post no site e no admin, e manda o
+   roteiro do carrossel. Se a publicação falhar, o post vai completo ao Telegram, com aviso,
+   para publicação manual — o conteúdo gerado nunca se perde.
 
 O post é gerado seguindo um checklist de SEO (palavra-chave no título/slug/resumo/1º parágrafo,
 resumo de 150–160 caracteres, headings H2/H3 sem saltos, links internos para páginas do produto,
@@ -36,7 +42,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 cp .env.example .env
-# preencha GEMINI_API_KEY, TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID no .env
+# preencha GEMINI_API_KEY, SEMEIO_BLOG_TOKEN, TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID no .env
 ```
 
 Execute os módulos em sequência (cada um lê a saída do anterior em `output/`):
@@ -44,11 +50,12 @@ Execute os módulos em sequência (cada um lê a saída do anterior em `output/`
 ```bash
 python -m src.scraper.main      # gera output/conteudo_extraido.json e atualiza data/estado.json
 python -m src.generator.main    # gera output/artigo.md e output/carrossel.json
-python -m src.notifier.main     # envia as mensagens ao Telegram
+python -m src.publisher.main    # publica no blog do Semeio (output/publicacao.json)
+python -m src.notifier.main     # avisa no Telegram e manda o carrossel
 ```
 
 Se não houver conteúdo novo no ciclo (nenhum link inédito encontrado pelo scraper), os módulos
-2-4 encerram sem erro e sem enviar nada — não há "conteúdo incompleto" para notificar.
+2-5 encerram sem erro e sem enviar nada — não há "conteúdo incompleto" para notificar.
 
 ## Testes
 
@@ -56,23 +63,28 @@ Se não houver conteúdo novo no ciclo (nenhum link inédito encontrado pelo scr
 pytest
 ```
 
-Os testes não fazem chamadas reais de rede, LLM ou Telegram (tudo mockado via `monkeypatch`).
+Os testes não fazem chamadas reais de rede, LLM, API do Semeio ou Telegram (tudo mockado via
+`monkeypatch`).
 
 ## Execução via GitHub Actions
 
 O workflow em `.github/workflows/pipeline.yml` roda semanalmente (segunda-feira, 12h UTC) e
 também pode ser disparado manualmente pela aba **Actions → Pipeline Semeio Content → Run
-workflow**.
+workflow**, escolhendo se o post entra como `publicado` ou `rascunho`.
 
 Secrets necessários no repositório (**Settings → Secrets and variables → Actions**):
 
 - `GEMINI_API_KEY`
+- `SEMEIO_BLOG_TOKEN` — o mesmo valor de `BLOG_INTEGRATION_TOKEN` no Django (Railway). Para
+  trocar, mude nos dois lados.
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 
 Variável opcional (**Settings → Secrets and variables → Actions → Variables**):
 
 - `GEMINI_MODEL` (default: `gemini-2.5-pro`, definido em `src/config.py`)
+- `BLOG_STATUS` (default: `publicado`) — `rascunho` para o post ficar no admin do Semeio até
+  alguém revisar e publicar. Vale para a execução agendada; a manual usa a opção do disparo.
 
 Variável opcional adicional:
 

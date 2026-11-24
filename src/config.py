@@ -22,6 +22,9 @@ CONTEUDO_EXTRAIDO_PATH = OUTPUT_DIR / "conteudo_extraido.json"
 ARTIGO_PATH = OUTPUT_DIR / "artigo.md"
 POST_BLOG_PATH = OUTPUT_DIR / "post_blog.json"
 CARROSSEL_PATH = OUTPUT_DIR / "carrossel.json"
+# Resposta da API do Semeio ao publicar o post (id, url, admin_url). O notificador usa para
+# mandar o link no Telegram; se não existir, a publicação falhou e o post vai completo.
+PUBLICACAO_PATH = OUTPUT_DIR / "publicacao.json"
 
 # Scraping
 USER_AGENT = "SemeioContentBot/1.0 (+contato: leandromachado@cogtime.com.br)"
@@ -70,9 +73,9 @@ BLOG_CONTEUDO_MIN_PALAVRAS = 600
 BLOG_MIN_TAGS = 2
 BLOG_SEO_TITULO_IDEAL_MAX = 60
 BLOG_SLUG_MAX = 60
-# Páginas do produto para links internos (SEO). Caminhos relativos — ajuste se o site do
-# Semeio usar outras rotas.
-BLOG_LINKS_INTERNOS = ("/funcionalidades", "/precos")
+# Páginas do produto para links internos (SEO). Caminhos relativos, com a barra final que o
+# site usa (sem ela, o link passa por um redirect 308 antes de chegar à página).
+BLOG_LINKS_INTERNOS = ("/funcionalidades/", "/precos/")
 
 # Diversidade de pauta: quantidade de posts recentes cujos eixos temáticos ficam em "cooldown".
 # Um eixo que aparece entre os últimos N posts publicados (registrados em data/estado.json) não é
@@ -80,6 +83,17 @@ BLOG_LINKS_INTERNOS = ("/funcionalidades", "/precos")
 # todos os eixos disponíveis no ciclo estiverem em cooldown, o gerador escolhe o menos recente
 # (nunca trava o pipeline) e emite um aviso.
 TEMA_COOLDOWN_POSTS = int(os.environ.get("TEMA_COOLDOWN_POSTS") or "3")
+
+# Publicação no blog do Semeio (API do Django: docs/guia-desenvolvedor/api-site.md, seção 5)
+SEMEIO_API_URL = os.environ.get("SEMEIO_API_URL") or "https://api.somossemeio.com.br/api/integracao/blog/posts"
+# "publicado" (padrão: o post vai ao ar na hora) ou "rascunho" (fica no admin para revisão).
+BLOG_STATUS = (os.environ.get("BLOG_STATUS") or "publicado").strip().lower()
+# Limites do model Post no Django: campo acima do limite faria a API recusar o post inteiro.
+BLOG_TITULO_MAX = 180
+BLOG_SEO_TITULO_MAX = 70
+BLOG_SEO_DESCRICAO_MAX = 180
+BLOG_TAG_MAX_CHARS = 60
+BLOG_MAX_TAGS = 10
 
 # Carrossel
 CARROSSEL_MIN_SLIDES = 4
