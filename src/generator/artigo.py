@@ -50,6 +50,31 @@ def _primeiro_paragrafo(conteudo: str) -> str:
     return ""
 
 
+# Expressões que o guia de escrita proíbe (deixam o texto pesado). Espelha GUIA_DE_ESCRITA.
+EXPRESSOES_PESADAS = (
+    "é fundamental", "de suma importância", "no cenário atual", "nos dias de hoje",
+    "nesse sentido", "vale ressaltar", "cabe destacar", "faz-se necessário", "no que tange",
+    "outrossim", "diante disso", "em suma",
+)
+FRASE_MEDIA_MAX_PALAVRAS = 20
+
+
+def metricas_legibilidade(conteudo: str) -> dict:
+    """Média de palavras por frase (só texto corrido, sem títulos e itens de lista) e expressões
+    pesadas encontradas. Usado para avisar no log, não para reprovar o post."""
+    texto = "\n".join(
+        linha for linha in conteudo.splitlines()
+        if linha.strip() and not re.match(r"\s*(#+|[-*]|\d+\.)\s", linha)
+    )
+    frases = [f for f in re.split(r"(?<=[.!?])\s+", texto) if len(f.split()) >= 3]
+    media = sum(len(f.split()) for f in frases) / len(frases) if frases else 0.0
+    minusculo = conteudo.lower()
+    return {
+        "palavras_por_frase": round(media, 1),
+        "expressoes_pesadas": [e for e in EXPRESSOES_PESADAS if e in minusculo],
+    }
+
+
 def _validar_post(post: dict) -> None:
     """Validações estruturais (hard fail) + checagens de SEO (warning). Human-in-the-loop
     revisa no Telegram antes de publicar, então critérios "ideais" apenas avisam."""
@@ -110,6 +135,17 @@ def _validar_post(post: dict) -> None:
             logger.warning("Palavra-chave '%s' ausente do primeiro parágrafo", palavra_chave)
         if palavra_chave and not any(t in post["slug"] for t in slugify(palavra_chave).split("-")):
             logger.warning("Palavra-chave '%s' ausente do slug", palavra_chave)
+
+    # --- Legibilidade (soft) ---
+    legibilidade = metricas_legibilidade(conteudo)
+    logger.info("Legibilidade: %.1f palavras por frase", legibilidade["palavras_por_frase"])
+    if legibilidade["palavras_por_frase"] > FRASE_MEDIA_MAX_PALAVRAS:
+        logger.warning(
+            "Frases longas: média de %.1f palavras (ideal até %d)",
+            legibilidade["palavras_por_frase"], FRASE_MEDIA_MAX_PALAVRAS,
+        )
+    if legibilidade["expressoes_pesadas"]:
+        logger.warning("Expressões pesadas no texto: %s", ", ".join(legibilidade["expressoes_pesadas"]))
 
     # --- SEO título (soft) ---
     seo_titulo = post.get("seo_titulo", "")
