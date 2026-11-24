@@ -190,3 +190,25 @@ def test_metricas_legibilidade_acusa_expressoes_pesadas():
     assert artigo.metricas_legibilidade(conteudo)["expressoes_pesadas"] == [
         "é fundamental", "nesse sentido", "vale ressaltar",
     ]
+
+
+def test_conteudo_curto_e_expandido_antes_de_validar(monkeypatch, tmp_path):
+    curto = _dados_validos()
+    curto["conteudo"] = "## Primeira seção\n\nTexto curto sobre a tesouraria.\n\n## Segunda seção\n\nFim."
+    expandido = "```markdown\n" + _dados_validos()["conteudo"] + "\n```"
+    respostas = ["contexto unificado", json.dumps(curto), expandido]
+    prompts = []
+
+    def fake_gerar(prompt):
+        prompts.append(prompt)
+        return respostas.pop(0)
+
+    monkeypatch.setattr(artigo, "gerar", fake_gerar)
+    monkeypatch.setattr(artigo, "POST_BLOG_PATH", tmp_path / "post.json")
+    monkeypatch.setattr(artigo, "ARTIGO_PATH", tmp_path / "artigo.md")
+
+    post, _, _ = artigo.gerar_post_blog(_corpus_tesouraria(), [], PALAVRAS, {}, cooldown_posts=3)
+
+    assert "ficou curto" in prompts[2] and "contexto unificado" in prompts[2]
+    assert post["conteudo"] == _dados_validos()["conteudo"].strip()
+    assert len(post["conteudo"].split()) >= artigo.BLOG_CONTEUDO_MIN_PALAVRAS
